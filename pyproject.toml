@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "package-name"
+name = "nercst"
 version = "0.1.0"
-description = "TEMPLATE"
+description = "NEw reduction and calibration software for telescope "
 license = "MIT"
 readme = "README.md"
-authors = ["KaoruNishikawa <k.nishikawa@a.phys.nagoya-u.ac.jp>"]
-homepage = "https://github.com/necst-telescope/Package-Name"
-repository = "https://github.com/necst-telescope/Package-Name"
+authors = ["Rin Yamada <yamada@a.phys.nagoya-u.ac.jp>", "Demachi Fumika <f.demachi@a.phys.nagoya-u.ac.jp>"]
+homepage = "https://github.com/necst-telescope/NERCST"
+repository = "https://github.com/necst-telescope/NERCST"
 
 [tool.poetry.dependencies]
 python = "^3.6"
