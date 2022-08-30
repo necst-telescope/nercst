@@ -9,7 +9,7 @@ homepage = "https://github.com/necst-telescope/NERCST"
 repository = "https://github.com/necst-telescope/NERCST"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.7"
 importlib-metadata = { version = "^4.4", python = "<3.8" }
 numpy = "^1.19"
 
