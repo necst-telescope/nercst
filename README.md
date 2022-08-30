@@ -21,6 +21,4 @@ pip install nercst
 
 ## Usage
 
----
-
 This library is using [Semantic Versioning](https://semver.org).
