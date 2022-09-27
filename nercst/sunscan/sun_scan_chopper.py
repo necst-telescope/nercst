@@ -12,7 +12,7 @@ import numpy as np
 
 # import constants as n2const
 import n_const.constants as n2const
-from io_extension import get_tp_data
+from ..core import get_tp_data
 
 
 class ChopperSun:
