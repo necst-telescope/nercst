@@ -53,7 +53,12 @@ class ChopperSun:
             obswl = (const.c / (n2const.REST_FREQ.j21_12co)).to("micron")
         else:
             raise ValueError("`obs_freq` must be '100G' or '200G'")
-        self.target = target.transform_to(AltAz(obswl=obswl, **args,))
+        self.target = target.transform_to(
+            AltAz(
+                obswl=obswl,
+                **args,
+            )
+        )
         return self.target
 
     def get_relative_position(self):

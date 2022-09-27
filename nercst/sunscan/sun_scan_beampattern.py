@@ -29,7 +29,7 @@ class BeampatternSun:
 
     @staticmethod
     def gaussian(x, sigma, mu, height=1):
-        return height * np.exp(-((x - mu) ** 2) / (2 * sigma ** 2))
+        return height * np.exp(-((x - mu) ** 2) / (2 * sigma**2))
 
     def split_data(self):
         # determine which coordinate the scan is done along
@@ -57,9 +57,9 @@ class BeampatternSun:
                 "res_y": self.data.resEl,
             }
         )
-        self.data_derivative = self.data.differentiate(
-            "t"
-        ).assign_attrs(self.data.attrs)
+        self.data_derivative = self.data.differentiate("t").assign_attrs(
+            self.data.attrs
+        )
         # method ``differentiate`` has no option ``keep_attr``
         # ``xr.set_options(keep_attrs=True)`` doesn't work for this
 
