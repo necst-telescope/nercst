@@ -16,6 +16,7 @@ AC240_TP_FIELD = "POWER_BE1"
 @dataclass
 class InitialArray(object):
     """Read raw data and make DataArray.
+
     Parameters
     ----------
     data_path: str or Path
