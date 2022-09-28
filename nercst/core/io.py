@@ -27,6 +27,7 @@ class InitialArray(object):
     topic_name: str
         Name of ROS topic through which the data taken with specific
         spectrometer board is sent.
+
     Notes
     -----
     ROS topic for each board is named as follows:
@@ -34,12 +35,14 @@ class InitialArray(object):
     - Total power data taken by XFFTS board xx: "xffts_power_boardxx" (0-padded)
     - Spectral data taken by AC240 board x: "ac240_spactra_data_x"
     - Total power data taken by AC240 board x: "ac240_tp_data_x"
+
     Examples
     --------
     >>> data_path = "/path/to/data/directory"
     >>> kisa_path = "path/to/kisafile.txt"
     >>> telescope = "NANTEN2" or "OPU-1.85"
     >>> ia = InitialArray(data_path, "xffts_board01", kisa_path, telescope)
+
     """
 
     data_path: PathLike
