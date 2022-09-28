@@ -1,18 +1,12 @@
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass
-from typing import Union, Optional, List, Tuple, Dict, Any
+from typing import Union, List, Dict
 
 import necstdb
 import numpy as np
 import xarray as xr
-import astropy.units as u
-from astropy.coordinates import SkyCoord
-from astropy.coordinates import AltAz, FK5, Galactic
-import n_const.constants as n2const
 
-# from .kisa_rev import apply_kisa_test
-# from .doppler import Doppler
 
 PathLike = Union[str, Path]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
