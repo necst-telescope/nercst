@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 import necstdb
 
-from nasco_analysis import io
+import io
 
 
 def list_all_topics(path):
