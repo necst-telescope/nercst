@@ -1,1 +1,1 @@
-from nercst.core import io
+from nercst.core import io  # noqa F401
