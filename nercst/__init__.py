@@ -9,4 +9,4 @@ except:  # noqa: E722
     __version__ = "0.0.0"
 
 from . import core  # noqa: F401
-from . import sunscan
+from . import sunscan  # noqa: F401
