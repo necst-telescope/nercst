@@ -1,2 +1,2 @@
-from .sun_scan_beampattern import *
-from .sun_scan_chopper import *
+from . import sun_scan_beampattern  # noqa: F401
+from . import sun_scan_chopper  # noqa: F401
