@@ -26,11 +26,13 @@ def get_tp_data(path, topic_name, kisa_path=None, weather=False):
     >>> path = '/mnt/usbdisk9/data/observation/otf_planet2018/n20200320131924_12CO_2-1_otfplanet_sun'
     >>> topic_name = ['xffts_power_board01', 'ac240_tp_data_1']
     >>> get_tp_data(path, topic_name[0])
-    "<xarray.DataArray (t: 1191)>\narray([2.25653151e+11, ..."
+    "<xarray.DataArray (t: 1191)>
+    array([2.25653151e+11, ..."
 
     Notes
     -----
     [TODO] Support multiple topics, maybe by wrapping this function.
+
     """  # noqa: E501
     data = io.Initial_array(path, kisa_path, topic_name)
     dat, obsmode, *_ = data.get_tp_array()  # `_` is for value(s) to be ignored
