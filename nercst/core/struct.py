@@ -19,7 +19,7 @@ class TimeSeriesArray(AsDataArray):
 
     """Specification for NERCST basic array"""
 
-    # TODO: automatic generation from neclib.config
+    # TODO: automatic generation from neclib.config and/or ROS topic list
     data: Data[Tuple[T, Ch], Any]
     t: Coord[T, datetime]
     ch: Coord[Ch, int]
@@ -81,8 +81,6 @@ class TimeSeriesArrayAccessor:
             for k, v in self.time_series_array.coords.items()
             if v.dims == ()
         }
-
-    array = TimeSeriesArray.new()
 
 
 def make_xarray(
