@@ -49,26 +49,40 @@ class TimeSeriesArrayAccessor:
     @property
     def time_coords(self):
         """Dictionary of arrays that label time axis."""
-        return {k: v.values for k, v in self.array.coords.items() if v.dims == ("t",)}
+        return {
+            k: v.values
+            for k, v in self.time_series_array.coords.items()
+            if v.dims == ("t",)
+        }
 
     @property
     def channel_coords(self):
         """Dictionary of arrays that label channel axis."""
-        return {k: v.values for k, v in self.array.coords.items() if v.dims == ("ch",)}
+        return {
+            k: v.values
+            for k, v in self.time_series_array.coords.items()
+            if v.dims == ("ch",)
+        }
 
     @property
     def data_coords(self):
         """Dictionary of arrays that label time and channel axis."""
         return {
-            k: v.values for k, v in self.array.coords.items() if v.dims == ("t", "ch")
+            k: v.values
+            for k, v in self.time_series_array.coords.items()
+            if v.dims == ("t", "ch")
         }
 
     @property
     def scalar_coords(self):
         """Dictionary of values that don't label any axes (point-like)."""
-        return {k: v.values for k, v in self.array.coords.items() if v.dims == ()}
+        return {
+            k: v.values
+            for k, v in self.time_series_array.coords.items()
+            if v.dims == ()
+        }
 
-    array = Array.new(data)
+    array = TimeSeriesArray.new()
 
 
 def make_xarray(
