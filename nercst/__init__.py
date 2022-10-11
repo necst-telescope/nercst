@@ -8,4 +8,4 @@ try:
 except:  # noqa: E722
     __version__ = "0.0.0"
 
-from . import core
+from . import core  # noqa F401

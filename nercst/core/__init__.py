@@ -1,1 +1,1 @@
-from . import struct
+from . import struct  # noqa F401
