@@ -21,27 +21,27 @@ class TimeSeriesArray(AsDataArray):
 
     # TODO: automatic generation from neclib.config and/or ROS topic list
     data: Data[Tuple[T, Ch], Any]
-    t: Coord[T, datetime]
-    ch: Coord[Ch, int]
-    vrad: Coord[T, float]
-    time: Coord[T, float]
-    in_temp: Coord[T, float]
-    out_temp: Coord[T, float]
-    in_humi: Coord[T, float]
-    out_humi: Coord[T, float]
-    wind_sp: Coord[T, float]
-    wind_dir: Coord[T, float]
-    press: Coord[T, float]
-    rain: Coord[T, float]
-    cabin_temp1: Coord[T, float]
-    cabin_temp2: Coord[T, float]
-    dome_temp1: Coord[T, float]
-    dome_temp2: Coord[T, float]
-    gen_temp1: Coord[T, float]
-    gen_temp2: Coord[T, float]
+    t: Coord[T, datetime] = 0
+    ch: Coord[Ch, int] = 0
+    vrad: Coord[T, float] = 0
+    time: Coord[T, float] = 0
+    in_temp: Coord[T, float] = 0
+    out_temp: Coord[T, float] = 0
+    in_humi: Coord[T, float] = 0
+    out_humi: Coord[T, float] = 0
+    wind_sp: Coord[T, float] = 0
+    wind_dir: Coord[T, float] = 0
+    press: Coord[T, float] = 0
+    rain: Coord[T, float] = 0
+    cabin_temp1: Coord[T, float] = 0
+    cabin_temp2: Coord[T, float] = 0
+    dome_temp1: Coord[T, float] = 0
+    dome_temp2: Coord[T, float] = 0
+    gen_temp1: Coord[T, float] = 0
+    gen_temp2: Coord[T, float] = 0
 
 
-@xr.register_dataarray_accessor("dcc")
+@xr.register_dataarray_accessor("dca")
 @dataclass(frozen=True)
 class TimeSeriesArrayAccessor:
     time_series_array: xr.DataArray
@@ -83,7 +83,7 @@ class TimeSeriesArrayAccessor:
         }
 
 
-def make_xarray(
+def make_time_series_array(
     data,
     time_coords=None,
     channel_coords=None,
