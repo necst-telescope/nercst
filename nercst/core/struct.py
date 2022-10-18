@@ -35,7 +35,7 @@ class TimeSeriesArray(AsDataArray):
     gen_temp2: Coord[T, float] = 0
 
 
-@xr.register_dataarray_accessor("dca")
+@xr.register_dataarray_accessor("ts")
 @dataclass(frozen=True)
 class TimeSeriesArrayAccessor:
     time_series_array: xr.DataArray
