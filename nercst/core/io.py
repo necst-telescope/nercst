@@ -94,12 +94,15 @@ def loaddb(
         orient="list"
     )
     channel_coords = {"channel": np.arange(len(data["spec"][0]))}
-
-    return nercst.core.struct.make_time_series_array(
+    loaded = nercst.core.struct.make_time_series_array(
         data["spec"],
         time_coords=time_coords,
         channel_coords=channel_coords,
     )
+
+    loaded["t"] = data[data_tlabel]
+
+    return loaded
 
 
 """
