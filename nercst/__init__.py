@@ -9,3 +9,4 @@ except:  # noqa: E722
     __version__ = "0.0.0"
 
 from . import core  # noqa F401
+from . import rsky  # noqa F401
