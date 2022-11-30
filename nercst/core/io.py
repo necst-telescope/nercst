@@ -5,7 +5,7 @@ import nercst
 import os
 
 from datetime import datetime
-from typing import Union, Literal
+from typing import Union, Literal, get_args
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
@@ -103,6 +103,15 @@ def loaddb(
     loaded["t"] = data[data_tlabel]
 
     return loaded
+
+
+def topic_getter(dbname: PathLike):
+    db = necstdb.opendb(dbname)
+    args = get_args(_)
+    topics = db.list_tables()
+    args_set = set(args)
+    topic_set = set(topics)
+    return list(args_set & topic_set)
 
 
 """
