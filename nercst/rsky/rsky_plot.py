@@ -33,7 +33,7 @@ def plot_all(dbname: Path, telescop: Literal["NANTEN2", "OPU1.85"]):
     >>> rsky.plot_all(dbname,"NANTEN2")
     (Show results for all topic names.)
     """
-    topicname_list = io.topic_getter(dbname)
+    topicname_list = sorted(io.topic_getter(dbname))
     figsize_x, figsize_y, topicname_list = calc_figsize(topicname_list)
     fig, ax = plt.subplots(
         figsize_x, figsize_y, figsize=(5 * figsize_x + 3, 5 * figsize_y)
@@ -43,5 +43,5 @@ def plot_all(dbname: Path, telescop: Literal["NANTEN2", "OPU1.85"]):
             db = io.loaddb(dbname, topicname, telescop)
             r_sky = Rsky(db)
             r_sky.tsys()
-            r_sky.plot(fig, ax[i // figsize_y, i % figsize_x])
+            r_sky.plot(fig, ax[i // figsize_y, i % figsize_x], topicname)
     plt.tight_layout()

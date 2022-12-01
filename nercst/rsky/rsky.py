@@ -40,6 +40,7 @@ class Rsky:
         self,
         fig: plt.figure = None,
         ax: plt.axes = None,
+        topicname: str = None,
     ):
         if ax is None:
             fig, ax = plt.subplots(1, 1, figsize=(15, 5))
@@ -78,3 +79,5 @@ class Rsky:
         ax2.tick_params(axis="y", labelsize=16)
         ax2.set_ylim(0, 1400)
         ax.legend(["HOT", "SKY"], fontsize=16)
+        if topicname is not None:
+            ax.set_title(topicname, fontsize=20)
