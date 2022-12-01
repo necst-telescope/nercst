@@ -1,5 +1,4 @@
 import xarray as xr
-import matplotlib
 import matplotlib.pyplot as plt
 
 
@@ -39,8 +38,8 @@ class Rsky:
 
     def plot(
         self,
-        fig: matplotlib.figure.Figure = None,
-        ax: matplotlib.axes._axes.Axes = None,
+        fig: plt.figure.Figure = None,
+        ax: plt.axes._axes.Axes = None,
     ):
         if ax is None:
             fig, ax = plt.subplots(1, 1, figsize=(15, 5))
