@@ -38,8 +38,8 @@ class Rsky:
 
     def plot(
         self,
-        fig: plt.figure.Figure = None,
-        ax: plt.axes._axes.Axes = None,
+        fig: plt.figure = None,
+        ax: plt.axes = None,
     ):
         if ax is None:
             fig, ax = plt.subplots(1, 1, figsize=(15, 5))
