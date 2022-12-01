@@ -9,7 +9,7 @@ from typing import Union, Literal, get_args
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
-_ = Literal[
+TypeBoards = Literal[
     "xffts_board01",
     "xffts_board02",
     "xffts_board03",
@@ -60,7 +60,7 @@ def get_time_indexed_df(structure: np.ndarray, tlabel):
 
 def loaddb(
     dbname: PathLike,
-    spec_topicname: _,
+    spec_topicname: TypeBoards,
     telescop: Literal["NANTEN2", "OPU1.85"] = "NANTEN2",
 ):
     if telescop == "NANTEN2":
@@ -107,7 +107,7 @@ def loaddb(
 
 def topic_getter(dbname: PathLike):
     db = necstdb.opendb(dbname)
-    args = get_args(_)
+    args = get_args(TypeBoards)
     topics = db.list_tables()
     args_set = set(args)
     topic_set = set(topics)
