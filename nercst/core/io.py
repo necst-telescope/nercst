@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import nercst
 import os
+import neclib
 
 from datetime import datetime
 from typing import Union, Literal, get_args
@@ -63,12 +64,14 @@ def loaddb(
     spec_topicname: TypeBoards,
     telescop: Literal["NANTEN2", "OPU1.85"] = "NANTEN2",
 ):
+
     if telescop == "NANTEN2":
         db = necstdb.opendb(dbname)
         data = db.open_table(spec_topicname).read(astype="array")
         obsmode = db.open_table("obsmode").read(astype="array")
         encoder = db.open_table("status_encoder").read(astype="array")
         weather = db.open_table("status_weather").read(astype="array")
+
     else:
         raise (ValueError("Currently, Only data taken with NANTEN2 is supported"))
 
@@ -107,11 +110,25 @@ def loaddb(
 
 def topic_getter(dbname: PathLike):
     db = necstdb.opendb(dbname)
+    config = neclib.config
+
+    prefix = f"necst-{config.observatory}-"
+    spectral_data = [
+        tablename
+        for tablename in db.list_tables()
+        if tablename.startswith(prefix + "data-spectral")
+    ]
+
     args = get_args(TypeBoards)
     topics = db.list_tables()
     args_set = set(args)
     topic_set = set(topics)
-    return list(args_set & topic_set)
+    spectral_data = set(spectral_data)
+
+    if len(list(args_set & topic_set)) == 0:
+        return spectral_data
+    else:
+        return list(args_set & topic_set)
 
 
 """
