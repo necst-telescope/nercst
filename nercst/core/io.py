@@ -40,6 +40,8 @@ def get_timelabel(structure: np.ndarray):
         for time in timestamps:
             if "stamp" in time:
                 tlabel = time
+            elif time == "time":
+                tlabel = time
             else:
                 pass
     else:
@@ -71,12 +73,17 @@ def loaddb(
         obsmode = db.open_table("obsmode").read(astype="array")
         encoder = db.open_table("status_encoder").read(astype="array")
         weather = db.open_table("status_weather").read(astype="array")
+        spec_label = "spec"
 
     elif telescop == "Common":
+        db = necstdb.opendb(dbname)
         data = db.open_table(spec_topicname).read(astype="array")
-        obsmode = db.open_table("necst-OMU1P85M-weather-ambient")
-        encoder = db.open_table("necst-OMU1P85M-ctrl-antenna-encoder")
-        weather = db.open_table("necst-OMU1P85M-weather-ambient")
+        obsmode = db.open_table("necst-OMU1P85M-weather-ambient").read(astype="array")
+        encoder = db.open_table("necst-OMU1P85M-ctrl-antenna-encoder").read(
+            astype="array"
+        )
+        weather = db.open_table("necst-OMU1P85M-weather-ambient").read(astype="array")
+        spec_label = "data"
 
     data_tlabel = get_timelabel(data)
 
@@ -99,9 +106,9 @@ def loaddb(
     time_coords = pd.concat([df_enc, df_weather, df_obsmode], axis=1).to_dict(
         orient="list"
     )
-    channel_coords = {"channel": np.arange(len(data["spec"][0]))}
+    channel_coords = {"channel": np.arange(len(data[spec_label][0]))}
     loaded = nercst.core.struct.make_time_series_array(
-        data["spec"],
+        data[spec_label],
         time_coords=time_coords,
         channel_coords=channel_coords,
     )
