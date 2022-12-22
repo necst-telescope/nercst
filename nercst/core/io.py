@@ -62,7 +62,7 @@ def get_time_indexed_df(structure: np.ndarray, tlabel):
 def loaddb(
     dbname: PathLike,
     spec_topicname: TypeBoards,
-    telescop: Literal["NANTEN2", "OPU1.85"] = "NANTEN2",
+    telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
 ):
 
     if telescop == "NANTEN2":
@@ -72,8 +72,11 @@ def loaddb(
         encoder = db.open_table("status_encoder").read(astype="array")
         weather = db.open_table("status_weather").read(astype="array")
 
-    else:
-        raise (ValueError("Currently, Only data taken with NANTEN2 is supported"))
+    elif telescop == "Common":
+        data = db.open_table(spec_topicname).read(astype="array")
+        obsmode = db.open_table("necst-OMU1P85M-weather-ambient")
+        encoder = db.open_table("necst-OMU1P85M-ctrl-antenna-encoder")
+        weather = db.open_table("necst-OMU1P85M-weather-ambient")
 
     data_tlabel = get_timelabel(data)
 
