@@ -71,7 +71,7 @@ def loaddb(
     Parameters
     ----------
     dbname : PathLike
-        File path for the data tobe loaded
+        File path for the data to be loaded
     spec_topicname : TypeBoards
         Topic name to specify the spectroscopic data. You can subtract 
         the topic key for the spectroscopic data using 
