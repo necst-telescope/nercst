@@ -83,8 +83,8 @@ def loaddb(
 
     Examples
     --------
-    >>> from custom_colormap.main import main
-    >>> cmap = main(name="Dark_rainbow", gamma=1.0, reverse=False)
+    >>> from nercst.core import io
+    >>> array = io.loaddb("path/to/necstdb")
 
     """
 
