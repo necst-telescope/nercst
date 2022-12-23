@@ -66,6 +66,23 @@ def loaddb(
     spec_topicname: TypeBoards,
     telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
 ):
+    """
+    Data loader for the necst telescopes
+    Parameters
+    ----------
+    dbname : PathLike
+        File path for the data tobe loaded
+    spec_topicname : TypeBoards
+        Topic name to specify the spectroscopic data. You can subtract 
+        the topic key for the spectroscopic data using the `topic_getter` function
+    telescop : Literal["NANTEN2", "OPU1.85", "Common"]
+        Use default parameter `Common` if you are using the NECST v4 system. `NANTEN2`, `OPU-1.85`
+        are for the NECST v2 and v3,respectively.
+    Examples
+    --------
+    >>> from custom_colormap.main import main
+    >>> cmap = main(name="Dark_rainbow", gamma=1.0, reverse=False)
+    """
 
     if telescop == "NANTEN2":
         db = necstdb.opendb(dbname)
