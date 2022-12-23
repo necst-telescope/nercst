@@ -74,10 +74,12 @@ def loaddb(
         File path for the data tobe loaded
     spec_topicname : TypeBoards
         Topic name to specify the spectroscopic data. You can subtract 
-        the topic key for the spectroscopic data using the `topic_getter` function
+        the topic key for the spectroscopic data using 
+        the `topic_getter` function
     telescop : Literal["NANTEN2", "OPU1.85", "Common"]
-        Use default parameter `Common` if you are using the NECST v4 system. `NANTEN2`, `OPU-1.85`
-        are for the NECST v2 and v3,respectively.
+        Use default parameter `Common` if you are using the
+        NECST v4 system. `NANTEN2`, `OPU-1.85` are for the NECST v2 
+        and v3,respectively.
     Examples
     --------
     >>> from custom_colormap.main import main
