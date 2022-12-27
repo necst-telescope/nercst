@@ -95,11 +95,14 @@ def loaddb(
         encoder = db.open_table("status_encoder").read(astype="array")
         weather = db.open_table("status_weather").read(astype="array")
         spec_label = "spec"
+        data_tlabel = get_timelabel(data)
 
     elif telescop == "Common":
         db = necstdb.opendb(dbname)
         data = db.open_table(spec_topicname).read(astype="array")
-        obsmode = db.open_table("necst-OMU1P85M-weather-ambient").read(astype="array")
+        obsmode = db.open_table(spec_topicname).read(
+            astype="array", cols=["time", "position"]
+        )
         encoder = db.open_table("necst-OMU1P85M-ctrl-antenna-encoder").read(
             astype="array"
         )
@@ -108,15 +111,15 @@ def loaddb(
 
     data_tlabel = get_timelabel(data)
 
+    enc_tlabel = get_timelabel(encoder)
+    df_enc = get_time_indexed_df(encoder, enc_tlabel)
+    df_enc = df_enc.sort_index().reindex(index=data[data_tlabel], method="bfill")
+
     obs_tlabel = get_timelabel(obsmode)
     df_obsmode = get_time_indexed_df(obsmode, obs_tlabel)
     df_obsmode = df_obsmode.sort_index().reindex(
         index=data[data_tlabel], method="bfill"
     )
-
-    enc_tlabel = get_timelabel(encoder)
-    df_enc = get_time_indexed_df(encoder, enc_tlabel)
-    df_enc = df_enc.sort_index().reindex(index=data[data_tlabel], method="bfill")
 
     weather_tlabel = get_timelabel(weather)
     df_weather = get_time_indexed_df(weather, weather_tlabel)
