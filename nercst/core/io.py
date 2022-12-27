@@ -91,11 +91,20 @@ def loaddb(
     if telescop == "NANTEN2":
         db = necstdb.opendb(dbname)
         data = db.open_table(spec_topicname).read(astype="array")
-        obsmode = db.open_table("obsmode").read(astype="array")
         encoder = db.open_table("status_encoder").read(astype="array")
         weather = db.open_table("status_weather").read(astype="array")
         spec_label = "spec"
         data_tlabel = get_timelabel(data)
+
+        # backward compatibillity
+        obsmode = db.open_table("obsmode").read(astype="array")
+        fields = []
+        for field in obsmode.dtype.names:
+            if field != "obs_mode":
+                fields.append(field)
+            else:
+                fields.append("position")
+        obsmode.dtype.names = tuple(fields)
 
     elif telescop == "Common":
         db = necstdb.opendb(dbname)
