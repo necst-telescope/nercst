@@ -104,8 +104,7 @@ def loaddb(
                 fields.append(field)
             else:
                 fields.append("position")
-            fields = tuple(fields)
-        obsmode.dtype.names = fields
+        obsmode.dtype.names = tuple(fields)
 
     elif telescop == "Common":
         db = necstdb.opendb(dbname)
