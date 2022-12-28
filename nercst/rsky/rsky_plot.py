@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from typing import Literal
 import numpy as np
+import re
 
 from .rsky import Rsky
 from ..core import io
@@ -17,7 +18,11 @@ def calc_figsize(topicname_list: list):
     return figsize_x, figsize_y, topicname_list
 
 
-def plot_all(dbname: Path, telescop: Literal["NANTEN2", "OPU1.85"]):
+def plot_all(
+    dbname: Path,
+    telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
+    save=False,
+):
     """
     Plot results for all topic names.
 
@@ -27,10 +32,12 @@ def plot_all(dbname: Path, telescop: Literal["NANTEN2", "OPU1.85"]):
         Path to the database directory
     telescop
         Name of telescope
+    save: bool
+        "True" -> save this figure named as "..._rsky.pdf" in dbname.parent directory.
 
     Examples
     --------
-    >>> rsky.plot_all(dbname,"NANTEN2")
+    >>> rsky.plot_all(dbname)
     (Show results for all topic names.)
     """
     topicname_list = sorted(io.topic_getter(dbname))
@@ -43,5 +50,14 @@ def plot_all(dbname: Path, telescop: Literal["NANTEN2", "OPU1.85"]):
             db = io.loaddb(dbname, topicname, telescop)
             r_sky = Rsky(db)
             r_sky.tsys()
-            r_sky.plot(fig, ax[i // figsize_y, i % figsize_x], topicname)
+            r_sky.plot(
+                fig,
+                ax[i // figsize_y, i % figsize_x],
+                re.search(r"board\d", topicname).group(),
+            )
     plt.tight_layout()
+    if save:
+        if "rsky" in str(dbname).lower():
+            fig.savefig(dbname.with_suffix(".pdf"))
+        else:
+            fig.savefig(dbname.parent.joinpath(str(dbname.name) + "_rsky.pdf"))
