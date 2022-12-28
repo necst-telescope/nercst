@@ -1,5 +1,6 @@
 import xarray as xr
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class Rsky:
@@ -20,11 +21,12 @@ class Rsky:
     """
 
     def __init__(self, data_array: xr.DataArray):
+        self.position_dtype = data_array.position.dtype.itemsize
         self.hot_array = data_array.where(
-            data_array["obs_mode"] == b"HOT       ", drop=True
+            data_array["position"] == b"HOT".ljust(self.position_dtype), drop=True
         )
         self.sky_array = data_array.where(
-            data_array["obs_mode"] == b"SKY       ", drop=True
+            data_array["position"] == b"SKY".ljust(self.position_dtype), drop=True
         )
 
     def tsys(self) -> xr.DataArray:
@@ -33,7 +35,7 @@ class Rsky:
         self.y_factor = self.ave_hot_array / self.ave_sky_array
         tsys_array = 300.0 / (self.y_factor - 1.0)
         self.tsys_array = tsys_array
-        self.tsys_mean = str(round(self.tsys_array.data.mean(), 2))
+        self.tsys_median = str(round(np.nanmedian(self.tsys_array.data), 2))
         return tsys_array
 
     def plot(
@@ -66,7 +68,7 @@ class Rsky:
         ax.text(
             self.ave_sky_array["channel"].data[-1] / 30,
             self.ave_sky_array.data.min(),
-            f"Tsys = {self.tsys_mean}K",
+            f"Tsys = {self.tsys_median}K",
             size=25,
         )
         ax.set_xlabel("channel", size=20)
