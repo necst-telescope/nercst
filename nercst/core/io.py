@@ -155,6 +155,7 @@ def loaddb(
     )
 
     loaded["t"] = data[data_tlabel]
+    loaded["ch"] = pd.Index(np.arange(32768))
 
     return loaded
 
