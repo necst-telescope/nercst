@@ -112,6 +112,9 @@ def loaddb(
         obsmode = db.open_table(spec_topicname).read(
             astype="array", cols=["time", "position"]
         )
+        scan_num = db.open_table(spec_topicname).read(
+            astype="array", cols=["time", "id"]
+        )
         encoder = db.open_table("necst-OMU1P85M-ctrl-antenna-encoder").read(
             astype="array"
         )
@@ -130,15 +133,20 @@ def loaddb(
         index=data[data_tlabel], method="bfill"
     )
 
+    df_scan_num = get_time_indexed_df(scan_num, data_tlabel)
+    df_scan_num = df_scan_num.sort_index().reindex(
+        index=data[data_tlabel], method="bfill"
+    )
+
     weather_tlabel = get_timelabel(weather)
     df_weather = get_time_indexed_df(weather, weather_tlabel)
     df_weather = df_weather.sort_index().reindex(
         index=data[data_tlabel], method="bfill"
     )
 
-    time_coords = pd.concat([df_enc, df_weather, df_obsmode], axis=1).to_dict(
-        orient="list"
-    )
+    time_coords = pd.concat(
+        [df_enc, df_weather, df_obsmode, df_scan_num], axis=1
+    ).to_dict(orient="list")
     channel_coords = {"channel": np.arange(len(data[spec_label][0]))}
     loaded = nercst.core.struct.make_time_series_array(
         data[spec_label],
