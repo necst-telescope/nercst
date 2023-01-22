@@ -19,6 +19,10 @@ def add_celestial_coords(array: xr.DataArray, frame: str) -> xr.DataArray:
     lon_lat = SkyCoord(
         lon, lat, frame="altaz", obstime=obstime, location=config.location
     ).transform_to(target_frame)
-    array = array.assign_coords({"lon_cor": ("t", lon_lat.lon.value)})
-    array = array.assign_coords({"lat_cor": ("t", lon_lat.lat.value)})
+    if "fk5" in frame:
+        array = array.assign_coords({"lon_cor": ("t", lon_lat.ra.value)})
+        array = array.assign_coords({"lat_cor": ("t", lon_lat.dec.value)})
+    if "Galactic" in frame:
+        array = array.assign_coords({"lon_cor": ("t", lon_lat.lon.value)})
+        array = array.assign_coords({"lat_cor": ("t", lon_lat.lat.value)})
     return array
