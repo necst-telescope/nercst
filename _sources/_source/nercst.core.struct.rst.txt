@@ -1,0 +1,7 @@
+nercst.core.struct
+==================
+
+.. automodule:: nercst.core.struct
+   :members:
+   :undoc-members:
+   :show-inheritance:

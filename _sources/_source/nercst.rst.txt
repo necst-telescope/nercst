@@ -1,0 +1,42 @@
+
+
+
+nercst
+======
+
+
+
+
+.. automodule:: nercst
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+Subpackages
+-----------
+
+.. autosummary::
+
+   nercst.core
+   nercst.onthefly
+   nercst.rsky
+   nercst.skydip
+   nercst.sunscan
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   nercst.core
+   nercst.onthefly
+   nercst.rsky
+   nercst.skydip
+   nercst.sunscan
+
+
+
+

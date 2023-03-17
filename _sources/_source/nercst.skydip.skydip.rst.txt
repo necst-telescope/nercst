@@ -1,0 +1,7 @@
+nercst.skydip.skydip
+====================
+
+.. automodule:: nercst.skydip.skydip
+   :members:
+   :undoc-members:
+   :show-inheritance:

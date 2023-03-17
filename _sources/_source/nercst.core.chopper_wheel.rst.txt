@@ -1,0 +1,7 @@
+nercst.core.chopper\_wheel
+==========================
+
+.. automodule:: nercst.core.chopper_wheel
+   :members:
+   :undoc-members:
+   :show-inheritance:

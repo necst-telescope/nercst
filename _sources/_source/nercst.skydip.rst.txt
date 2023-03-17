@@ -1,0 +1,35 @@
+
+
+
+nercst.skydip
+=============
+
+
+
+
+.. automodule:: nercst.skydip
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   nercst.skydip.skydip
+   nercst.skydip.slydip_plot
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   nercst.skydip.skydip
+   nercst.skydip.slydip_plot

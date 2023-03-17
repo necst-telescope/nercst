@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nercst.core.io &#8212; NERCST 0.1.0 documentation</title>
+    
+  <link href="../../../_static/css/theme.css" rel="stylesheet">
+  <link href="../../../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/blank.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css" />
+    
+  <link rel="preload" as="script" href="../../../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/106944387?s=400&amp;u=ddc959411de05d65ed4a64cc8b871d20a05ce395&amp;v=4"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../../index.html">
+<p class="title">NERCST</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../index.html">
+  Home
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../../_source/nercst.html">
+  API Reference
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+        <li class="nav-item">
+          <a class="nav-link" href="https://github.com/necst-telescope/NERCST" rel="noopener" target="_blank" title="GitHub">
+            <span><i class="fab fa-github-square"></i></span>
+            <label class="sr-only">GitHub</label>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://pypi.org/project/nercst/" rel="noopener" target="_blank" title="PyPI">
+            <span><i class="fas fa-cubes"></i></span>
+            <label class="sr-only">PyPI</label>
+          </a>
+        </li>
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar"><!DOCTYPE html>
+<!-- This will display the version of the docs -->
+<p style="text-align: center; font-family: Verdana, sans-serif;">v0.1.0</p><form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for nercst.core.io</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">necstdb</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">nercst</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">neclib</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">get_args</span>
+
+<span class="n">PathLike</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">]</span>
+<span class="n">timestamp2datetime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">)</span>
+<span class="n">TypeBoards</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span>
+    <span class="s2">&quot;xffts_board01&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board02&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board03&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board04&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board05&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board06&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board07&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board08&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board09&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board10&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board11&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board12&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board13&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board14&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board15&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;xffts_board16&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_timelabel"><a class="viewcode-back" href="../../../_source/nercst.core.io.html#nercst.core.io.get_timelabel">[docs]</a><span class="k">def</span> <span class="nf">get_timelabel</span><span class="p">(</span><span class="n">structure</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="n">timestamps</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">structure</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;time&quot;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">timestamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">timestamps</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">time</span> <span class="ow">in</span> <span class="n">timestamps</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;stamp&quot;</span> <span class="ow">in</span> <span class="n">time</span><span class="p">:</span>
+                <span class="n">tlabel</span> <span class="o">=</span> <span class="n">time</span>
+            <span class="k">elif</span> <span class="n">time</span> <span class="o">==</span> <span class="s2">&quot;time&quot;</span><span class="p">:</span>
+                <span class="n">tlabel</span> <span class="o">=</span> <span class="n">time</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tlabel</span> <span class="o">=</span> <span class="n">timestamps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">tlabel</span></div>
+
+
+<div class="viewcode-block" id="get_time_indexed_df"><a class="viewcode-back" href="../../../_source/nercst.core.io.html#nercst.core.io.get_time_indexed_df">[docs]</a><span class="k">def</span> <span class="nf">get_time_indexed_df</span><span class="p">(</span><span class="n">structure</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">tlabel</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">structure</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">structure</span><span class="p">[</span><span class="n">tlabel</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;time&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">label</span><span class="p">:</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">structure</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">df</span></div>
+
+
+<div class="viewcode-block" id="loaddb"><a class="viewcode-back" href="../../../_source/nercst.core.io.html#nercst.core.io.loaddb">[docs]</a><span class="k">def</span> <span class="nf">loaddb</span><span class="p">(</span>
+    <span class="n">dbname</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">,</span>
+    <span class="n">spec_topicname</span><span class="p">:</span> <span class="n">TypeBoards</span><span class="p">,</span>
+    <span class="n">telescop</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;NANTEN2&quot;</span><span class="p">,</span> <span class="s2">&quot;OPU1.85&quot;</span><span class="p">,</span> <span class="s2">&quot;Common&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Common&quot;</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Data loader for the necst telescopes</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dbname : PathLike</span>
+<span class="sd">        File path for the data to be loaded</span>
+<span class="sd">    spec_topicname : TypeBoards</span>
+<span class="sd">        Topic name to specify the spectroscopic data. You can subtract</span>
+<span class="sd">        the topic key for the spectroscopic data using</span>
+<span class="sd">        the `topic_getter` function.</span>
+<span class="sd">    telescop : Literal[&quot;NANTEN2&quot;, &quot;OPU1.85&quot;, &quot;Common&quot;]</span>
+<span class="sd">        Use default parameter ``Common`` if you are using the</span>
+<span class="sd">        NECST v4 system. ``NANTEN2``, ``OPU-1.85`` are for the NECST v2</span>
+<span class="sd">        and v3,respectively.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from nercst.core import io</span>
+<span class="sd">    &gt;&gt;&gt; array = io.loaddb(&quot;path/to/necstdb&quot;)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">telescop</span> <span class="o">==</span> <span class="s2">&quot;NANTEN2&quot;</span><span class="p">:</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">necstdb</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="n">dbname</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="n">spec_topicname</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">)</span>
+        <span class="n">encoder</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="s2">&quot;status_encoder&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">)</span>
+        <span class="n">weather</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="s2">&quot;status_weather&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">)</span>
+        <span class="n">spec_label</span> <span class="o">=</span> <span class="s2">&quot;spec&quot;</span>
+        <span class="n">data_tlabel</span> <span class="o">=</span> <span class="n">get_timelabel</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># backward compatibillity</span>
+        <span class="n">obsmode</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="s2">&quot;obsmode&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">obsmode</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="o">!=</span> <span class="s2">&quot;obs_mode&quot;</span><span class="p">:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;position&quot;</span><span class="p">)</span>
+        <span class="n">obsmode</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">telescop</span> <span class="o">==</span> <span class="s2">&quot;Common&quot;</span><span class="p">:</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">necstdb</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="n">dbname</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="n">spec_topicname</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">)</span>
+        <span class="n">obsmode</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="n">spec_topicname</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+            <span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">scan_num</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="n">spec_topicname</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+            <span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">encoder</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="s2">&quot;necst-OMU1P85M-ctrl-antenna-encoder&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
+            <span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span>
+        <span class="p">)</span>
+        <span class="n">weather</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">open_table</span><span class="p">(</span><span class="s2">&quot;necst-OMU1P85M-weather-ambient&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">astype</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">)</span>
+        <span class="n">spec_label</span> <span class="o">=</span> <span class="s2">&quot;data&quot;</span>
+
+    <span class="n">data_tlabel</span> <span class="o">=</span> <span class="n">get_timelabel</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">enc_tlabel</span> <span class="o">=</span> <span class="n">get_timelabel</span><span class="p">(</span><span class="n">encoder</span><span class="p">)</span>
+    <span class="n">df_enc</span> <span class="o">=</span> <span class="n">get_time_indexed_df</span><span class="p">(</span><span class="n">encoder</span><span class="p">,</span> <span class="n">enc_tlabel</span><span class="p">)</span>
+    <span class="n">df_enc</span> <span class="o">=</span> <span class="n">df_enc</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">data_tlabel</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfill&quot;</span><span class="p">)</span>
+
+    <span class="n">obs_tlabel</span> <span class="o">=</span> <span class="n">get_timelabel</span><span class="p">(</span><span class="n">obsmode</span><span class="p">)</span>
+    <span class="n">df_obsmode</span> <span class="o">=</span> <span class="n">get_time_indexed_df</span><span class="p">(</span><span class="n">obsmode</span><span class="p">,</span> <span class="n">obs_tlabel</span><span class="p">)</span>
+    <span class="n">df_obsmode</span> <span class="o">=</span> <span class="n">df_obsmode</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">data_tlabel</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfill&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">df_scan_num</span> <span class="o">=</span> <span class="n">get_time_indexed_df</span><span class="p">(</span><span class="n">scan_num</span><span class="p">,</span> <span class="n">data_tlabel</span><span class="p">)</span>
+    <span class="n">df_scan_num</span> <span class="o">=</span> <span class="n">df_scan_num</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">data_tlabel</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfill&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">weather_tlabel</span> <span class="o">=</span> <span class="n">get_timelabel</span><span class="p">(</span><span class="n">weather</span><span class="p">)</span>
+    <span class="n">df_weather</span> <span class="o">=</span> <span class="n">get_time_indexed_df</span><span class="p">(</span><span class="n">weather</span><span class="p">,</span> <span class="n">weather_tlabel</span><span class="p">)</span>
+    <span class="n">df_weather</span> <span class="o">=</span> <span class="n">df_weather</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span>
+        <span class="n">index</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">data_tlabel</span><span class="p">],</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;bfill&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">time_coords</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">df_enc</span><span class="p">,</span> <span class="n">df_weather</span><span class="p">,</span> <span class="n">df_obsmode</span><span class="p">,</span> <span class="n">df_scan_num</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">)</span>
+    <span class="n">channel_coords</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">spec_label</span><span class="p">][</span><span class="mi">0</span><span class="p">]))}</span>
+    <span class="n">loaded</span> <span class="o">=</span> <span class="n">nercst</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">struct</span><span class="o">.</span><span class="n">make_time_series_array</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">spec_label</span><span class="p">],</span>
+        <span class="n">time_coords</span><span class="o">=</span><span class="n">time_coords</span><span class="p">,</span>
+        <span class="n">channel_coords</span><span class="o">=</span><span class="n">channel_coords</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">loaded</span><span class="p">[</span><span class="s2">&quot;t&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data_tlabel</span><span class="p">]</span>
+    <span class="n">loaded</span><span class="p">[</span><span class="s2">&quot;ch&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">32768</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">loaded</span></div>
+
+
+<div class="viewcode-block" id="topic_getter"><a class="viewcode-back" href="../../../_source/nercst.core.io.html#nercst.core.io.topic_getter">[docs]</a><span class="k">def</span> <span class="nf">topic_getter</span><span class="p">(</span><span class="n">dbname</span><span class="p">:</span> <span class="n">PathLike</span><span class="p">):</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">necstdb</span><span class="o">.</span><span class="n">opendb</span><span class="p">(</span><span class="n">dbname</span><span class="p">)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">neclib</span><span class="o">.</span><span class="n">config</span>
+
+    <span class="n">prefix</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;necst-</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">observatory</span><span class="si">}</span><span class="s2">-&quot;</span>
+    <span class="n">spectral_data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">tablename</span>
+        <span class="k">for</span> <span class="n">tablename</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">list_tables</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">tablename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;data-spectral&quot;</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">get_args</span><span class="p">(</span><span class="n">TypeBoards</span><span class="p">)</span>
+    <span class="n">topics</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">list_tables</span><span class="p">()</span>
+    <span class="n">args_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">topic_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">topics</span><span class="p">)</span>
+    <span class="n">spectral_data</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">spectral_data</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">args_set</span> <span class="o">&amp;</span> <span class="n">topic_set</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">spectral_data</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">args_set</span> <span class="o">&amp;</span> <span class="n">topic_set</span><span class="p">)</span></div>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    def convert(</span>
+<span class="sd">        structured_array: np.ndarray, dims: List[str]</span>
+<span class="sd">    ) -&gt; Dict[str, xr.DataArray]:</span>
+<span class="sd">        if not structured_array.dtype.names:  # when not structured</span>
+<span class="sd">            return {&quot;total_power&quot;: xr.DataArray(structured_array, dims=dims)}</span>
+<span class="sd">        ret = {}</span>
+<span class="sd">        for field in structured_array.dtype.names:</span>
+<span class="sd">            dim = dims[: structured_array[field].ndim]</span>
+<span class="sd">            ret[field] = xr.DataArray(structured_array[field], dims=dim)</span>
+<span class="sd">        return ret</span>
+
+<span class="sd">    def interp(dict_of_xarrays: Dict, tref: np.ndarray) -&gt; Dict[str, xr.DataArray]:</span>
+<span class="sd">        ret = {}</span>
+<span class="sd">        for k, v in dict_of_xarrays.items():</span>
+<span class="sd">            ret[k] = v.interp(t=tref)</span>
+<span class="sd">        return k</span>
+
+<span class="sd">    def reindex(</span>
+<span class="sd">        dict_of_xarrays: Dict, ref: Union[xr.DataArray, np.ndarray]</span>
+<span class="sd">    ) -&gt; Dict[str, xr.DataArray]:</span>
+<span class="sd">        ret = {}</span>
+<span class="sd">        for k, v in dict_of_xarrays.items():</span>
+<span class="sd">            ret[k] = v.reindex_like(ref, method=&quot;bfill&quot;)</span>
+<span class="sd">        return k</span>
+
+<span class="sd">    data = convert(data, [&quot;t&quot;, &quot;spectra&quot;])</span>
+<span class="sd">    obsmode = convert(obsmode, [&quot;t&quot;])</span>
+<span class="sd">    encoder = convert(encoder, [&quot;t&quot;])</span>
+<span class="sd">    weather = convert(weather, [&quot;t&quot;])</span>
+
+<span class="sd">    if debug:</span>
+<span class="sd">        return data, obsmode, encoder, weather</span>
+
+<span class="sd">    tref = data[&quot;timestamp&quot;]</span>
+
+<span class="sd">    encoder = interp(encoder, tref)</span>
+<span class="sd">    weather = interp(weather, tref)</span>
+<span class="sd">    obsmode = reindex(obsmode, data[&quot;spec&quot;])</span>
+
+<span class="sd">    time_coords = xr.concat([encoder, weather, obsmode], dims=&quot;t&quot;).to_dict()</span>
+<span class="sd">    channel_coords = {&quot;channel&quot;: np.arange(len(data[&quot;spec&quot;][0]))}</span>
+<span class="sd">&quot;&quot;&quot;</span>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <script src="../../../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright 2022, NECST Developers.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

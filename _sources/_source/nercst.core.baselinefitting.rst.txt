@@ -1,0 +1,7 @@
+nercst.core.baselinefitting
+===========================
+
+.. automodule:: nercst.core.baselinefitting
+   :members:
+   :undoc-members:
+   :show-inheritance:

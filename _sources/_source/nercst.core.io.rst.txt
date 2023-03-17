@@ -1,0 +1,7 @@
+nercst.core.io
+==============
+
+.. automodule:: nercst.core.io
+   :members:
+   :undoc-members:
+   :show-inheritance:

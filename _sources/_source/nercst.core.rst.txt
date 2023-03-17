@@ -1,0 +1,39 @@
+
+
+
+nercst.core
+===========
+
+
+
+
+.. automodule:: nercst.core
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+
+
+
+
+
+Submodules
+----------
+
+.. autosummary::
+
+   nercst.core.baselinefitting
+   nercst.core.chopper_wheel
+   nercst.core.io
+   nercst.core.struct
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   nercst.core.baselinefitting
+   nercst.core.chopper_wheel
+   nercst.core.io
+   nercst.core.struct
