@@ -14,7 +14,8 @@ PKG_NAME = "nercst"
 @pytest.fixture
 def tmp_project_dir(tmp_path_factory) -> Path:
     project_dir = tmp_path_factory.mktemp(PKG_NAME)
-    _ = subprocess.run(["cp", "-rv", ".", str(project_dir)], cwd=project_root)
+    subprocess.run(["git", "clone", ".", str(project_dir)], cwd=project_root)
+
     return project_dir
 
 
