@@ -26,6 +26,7 @@ jobs:
           pip3 install poetry
           poetry install
         #  poetry run pip3 install 'setuptools==59.6'  # Workaround, poetry 1.1.x removes this.
+          poetry run pip3 wheel --use-pep517 "numba (==0.47.0)"
       - name: Lint by Flake8 
         run: poetry run flake8 tests ${PACKAGE_NAME}
       - name: Format by Black
