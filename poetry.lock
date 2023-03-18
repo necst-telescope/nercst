@@ -1830,14 +1830,14 @@ test = ["pep440", "pre-commit", "pytest", "testpath"]
 
 [[package]]
 name = "neclib"
-version = "0.22.2"
+version = "0.24.2"
 description = "Pure Python tools for NECST."
 category = "main"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "neclib-0.22.2-py3-none-any.whl", hash = "sha256:be2c71243c9c30ad849f87420eef960c81a632a65659f3a6d881a889623c9684"},
-    {file = "neclib-0.22.2.tar.gz", hash = "sha256:6209bca32d7066b6055fa344a1c39b35ff3b355bb8f536b2d0063a9491f6dfb2"},
+    {file = "neclib-0.24.2-py3-none-any.whl", hash = "sha256:9fbcdcafacf18902866156fa80d41b84403d7a3fd6585b212def453e9613e590"},
+    {file = "neclib-0.24.2.tar.gz", hash = "sha256:74e6240ca5dab2ad71f0252c3b4e3bdd6e15e1a290c286d6ebb5e907b93a4de0"},
 ]
 
 [package.dependencies]
@@ -1846,6 +1846,7 @@ matplotlib = ">=3.6.2,<4.0.0"
 necstdb = ">=0.2.9,<0.3.0"
 numpy = ">=1.24,<2.0"
 ogameasure = ">=0.5.8,<0.6.0"
+psutil = ">=5.9.4,<6.0.0"
 pyinterface = {version = ">=1.6,<2.0", markers = "sys_platform == \"linux\""}
 tomlkit = ">=0.11.4,<0.12.0"
 xfftspy = ">=0.1.3,<0.2.0"
