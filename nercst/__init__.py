@@ -10,3 +10,5 @@ except:  # noqa: E722
 
 from . import core  # noqa F401
 from . import rsky  # noqa F401
+from . import onthefly  # noqa F401
+from . import skydip  # noqa F401
