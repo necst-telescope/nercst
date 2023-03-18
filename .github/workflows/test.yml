@@ -23,6 +23,9 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          python - m pip3 install - upgrade pip3
+          pip3 install - upgrade wheel
+          pip3 install - upgrade setuptools
           pip3 install poetry
           poetry config experimental.new-installer false
           poetry install
