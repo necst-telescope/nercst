@@ -5,14 +5,15 @@ from neclib import config
 from astropy.time import Time
 from neclib.coordinates import parse_frame
 from astropy.coordinates import SkyCoord
-from neclib.parameters import PointingError
+from neclib.coordinates import PointingError
 
 
-def add_celestial_coords(array: xr.DataArray, frame: str) -> xr.DataArray:
+def add_celestial_coords(array: xr.DataArray, frame: str, pepath: str) -> xr.DataArray:
 
-    pe = PointingError("OMU1P85M")
-    lon, lat = pe.apparent2refracted(
-        array["lon"].values * u.deg, array["lat"].values * u.deg
+    pe = PointingError.from_file(pepath)
+    lon, lat = pe.apparent_to_refracted(
+        array["lon"].values * u.deg,
+        array["lat"].values * u.deg,
     )
     target_frame = parse_frame(frame)
     obstime = Time(array.t, format="unix")

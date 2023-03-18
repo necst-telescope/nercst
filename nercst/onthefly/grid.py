@@ -5,7 +5,7 @@ from scipy.interpolate import griddata
 from astropy import units as u
 
 
-def make_grid(array, grid_size, map_center, grid_number):
+def make_grid(array, grid_size, map_center, grid_number_x, grid_number_y):
     if not isinstance(grid_size, u.Quantity):
         raise (TypeError("grid units must be specified"))
     else:
@@ -26,15 +26,18 @@ def make_grid(array, grid_size, map_center, grid_number):
     )
 
     lon_coords = np.linspace(
-        map_center[0] - grid_size_deg * grid_number / 2,
-        map_center[0] + grid_size_deg * grid_number / 2,
+        map_center[0] - grid_size_deg * grid_number_x / 2,
+        map_center[0] + grid_size_deg * grid_number_x / 2,
+        grid_number_x,
     )
     lat_coords = np.linspace(
-        map_center[1] - grid_size_deg * grid_number / 2,
-        map_center[1] + grid_size_deg * grid_number / 2,
+        map_center[1] - grid_size_deg * grid_number_y / 2,
+        map_center[1] + grid_size_deg * grid_number_y / 2,
+        grid_number_y,
     )
     vcoords = array.ch.values
     grid = np.meshgrid(lon_coords, lat_coords, vcoords)
+    # grid = np.meshgrid(lon_coords, lat_coords)
 
     return grid
 

@@ -157,6 +157,9 @@ def loaddb(
     loaded["t"] = data[data_tlabel]
     loaded["ch"] = pd.Index(np.arange(32768))
 
+    pointing_parampath = dbname + "/pointing_param.toml"
+    loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
+
     return loaded
 
 
