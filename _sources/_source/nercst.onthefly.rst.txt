@@ -17,3 +17,17 @@ nercst.onthefly
 
 
 
+
+Submodules
+----------
+
+.. autosummary::
+
+   nercst.onthefly.grid
+
+.. toctree::
+   :maxdepth: 4
+   :titlesonly:
+   :hidden:
+
+   nercst.onthefly.grid

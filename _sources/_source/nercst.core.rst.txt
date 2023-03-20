@@ -25,6 +25,7 @@ Submodules
 
    nercst.core.baselinefitting
    nercst.core.chopper_wheel
+   nercst.core.coords_converter
    nercst.core.io
    nercst.core.struct
 
@@ -35,5 +36,6 @@ Submodules
 
    nercst.core.baselinefitting
    nercst.core.chopper_wheel
+   nercst.core.coords_converter
    nercst.core.io
    nercst.core.struct
