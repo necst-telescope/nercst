@@ -2,6 +2,12 @@ import xarray as xr
 import numpy as np
 
 
+def mean(array):
+    mean = array.mean("t", keepdims=True)
+    mean["t"] = array.t.mean("t", keepdims=True)
+    return mean
+
+
 def scanmask(time_series_array: xr.DataArray) -> xr.DataArray:
     try:
         ids = np.unique(time_series_array["id"])
@@ -14,9 +20,9 @@ def scanmask(time_series_array: xr.DataArray) -> xr.DataArray:
 
     for scan in ids:
         scanmask = time_series_array[scan_key] == scan
-        scanmasked_array = time_series_array[scanmask].mean(axis=1)
-
-        mean_array_list.append(scanmasked_array)
+        scanmasked_array = time_series_array[scanmask]
+        scanmasked_array_mean = mean(scanmasked_array)
+        mean_array_list.append(scanmasked_array_mean)
     mean_array = xr.concat(mean_array_list, dim="t")
     return mean_array
 
