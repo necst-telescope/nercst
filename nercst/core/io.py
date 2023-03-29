@@ -163,6 +163,7 @@ def loaddb(
 
     pointing_parampath = Path(dbname + "/pointing_param.toml")
     obs_filepath = Path(glob(dbname + "/*.obs")[0])
+    obs_filepath = Path(glob(dbname + "/config.toml")[0])
     loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
     loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
 
