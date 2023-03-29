@@ -26,4 +26,7 @@ def add_celestial_coords(array: xr.DataArray, frame: str, pepath: str) -> xr.Dat
     if "Galactic" in frame:
         array = array.assign_coords({"lon_cor": ("t", lon_lat.lon.value)})
         array = array.assign_coords({"lat_cor": ("t", lon_lat.lat.value)})
+    if "altaz" in frame:
+        array = array.assign_coords({"lon_cor": ("t", lon.value)})
+        array = array.assign_coords({"lat_cor": ("t", lat.value)})
     return array
