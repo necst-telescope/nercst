@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nercst"
-version = "0.1.3"
+version = "0.1.5"
 description = "NEw reduction and calibration software for telescope "
 license = "MIT"
 readme = "README.md"
