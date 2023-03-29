@@ -4,9 +4,12 @@ import pandas as pd
 import nercst
 import os
 import neclib
+from glob import glob
 
+from pathlib import Path
 from datetime import datetime
 from typing import Union, Literal, get_args
+from nercst.core.coords_converter import add_celestial_coords
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
@@ -65,6 +68,7 @@ def loaddb(
     dbname: PathLike,
     spec_topicname: TypeBoards,
     telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
+    pe_cor=True,
 ):
     """Data loader for the necst telescopes
 
@@ -157,10 +161,16 @@ def loaddb(
     loaded["t"] = data[data_tlabel]
     loaded["ch"] = pd.Index(np.arange(32768))
 
-    pointing_parampath = dbname + "/pointing_param.toml"
+    pointing_parampath = Path(dbname + "/pointing_param.toml")
+    obs_filepath = Path(glob(dbname + "/*.obs")[0])
     loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
+    loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
 
-    return loaded
+    if pe_cor:
+        frame = neclib.core.files.toml.read(obs_filepath)["coordinate"]["coord_sys"]
+        return add_celestial_coords(loaded, frame, pointing_parampath)
+    else:
+        return loaded
 
 
 def topic_getter(dbname: PathLike):
