@@ -10,14 +10,6 @@ from neclib.coordinates import PointingError
 
 def add_celestial_coords(array: xr.DataArray, frame: str, pepath: str) -> xr.DataArray:
     pe = PointingError.from_file(pepath)
-
-    _lon, _lat = pe.inverse_atmospheric_refraction(
-        array["lon"].values * u.deg,
-        array["lat"].values * u.deg,
-        array["pressure"].values * u.hPa,
-        array["temperature"].values * u.deg_C,
-        array["relative_hummidity"].values,
-    )
     lon, lat = pe.apparent_to_refracted(
         array["lon"].values * u.deg,
         array["lat"].values * u.deg,
