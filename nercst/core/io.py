@@ -10,6 +10,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Union, Literal, get_args
 from nercst.core.coords_converter import add_celestial_coords
+from nercst.core.spectrometer_channel import add_radial_velocity
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
@@ -69,6 +70,7 @@ def loaddb(
     spec_topicname: TypeBoards,
     telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
     pe_cor=True,
+    dop_cor=True,
 ):
     """Data loader for the necst telescopes
 
@@ -171,6 +173,10 @@ def loaddb(
     if pe_cor:
         frame = neclib.core.files.toml.read(obs_filepath)["coordinate"]["coord_sys"]
         return add_celestial_coords(loaded, frame, pointing_parampath)
+    if dop_cor:
+        return add_radial_velocity(
+            data_array=loaded, dbname=dbname, topic_name=spec_topicname
+        )
     else:
         return loaded
 
