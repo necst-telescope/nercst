@@ -3,10 +3,11 @@ import astropy.units as u
 import numpy as np
 import xarray as xr
 import re
+from astropy.coordinates import EarthLocation
 
 from neclib.coordinates import Observer, CoordCalculator
 from neclib.core.files import toml
-from neclib.core import Configuration
+from neclib.core import RichParameters
 from nercst import core
 import necstdb
 
@@ -18,11 +19,13 @@ def calc_vobs(obstime_array, location, target):
     obs = Observer(location)
     calc = CoordCalculator(location)
     name_coord = calc.name_coordinate(target)
+    # print("Calculating Vobs...")
     for time in obstime_array:
         ret = name_coord.realize(time)
         az_list.append(ret.lon)
         el_list.append(ret.lat)
 
+    print("Calculating Vobs...")
     v_obs = obs.v_obs(
         lon=az_list, lat=el_list, time=obstime_array, frame="altaz", unit="deg"
     )
@@ -39,6 +42,7 @@ def convert_to_velocity(
     observation_frequency,
 ):
 
+    print("Converting channel into velocity...")
     observed_GHz_array = channel_array * freq_resolution
     if side_band == "usb":
         pre_hd_array = (observed_GHz_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
@@ -105,9 +109,13 @@ def get_lo(dbname, side_band):
 
 def add_radial_velocity(data_array, dbname, topic_name):
     board_id = int(topic_name[-1])
-    params = toml.read(data_array.attrs["obs_filepath"])
-    config = Configuration.from_file(data_array.attrs["config_filepath"])
-    config.attach_all_parsers()
+    obs_filepath = data_array.attrs["obs_filepath"]
+    config_filepath = data_array.attrs["config_filepath"]
+    print(f"read obsfile from {obs_filepath}.")
+    params = toml.read(obs_filepath)
+    print(f"read config file from {config_filepath}.")
+    config = RichParameters.from_file(config_filepath)
+    config.attach_parsers(location=lambda x: EarthLocation(**x))
     target = " ".join(params["observation_property"]["target"].split("_"))
     freq_resolution = (
         config.spectrometer.bw_MHz[str(board_id)] * u.MHz / config.spectrometer.max_ch
@@ -119,7 +127,7 @@ def add_radial_velocity(data_array, dbname, topic_name):
     velocity_array = get_vlsr(
         data_array,
         freq_resolution,
-        config.spectrometer.factor_1st_lo,
+        config.multiplier.factor_1st_lo,
         freq_1st_lo,
         freq_2nd_lo,
         sis_channel_inv[board_id].lower(),
