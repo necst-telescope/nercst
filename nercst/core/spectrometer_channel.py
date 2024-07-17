@@ -1,4 +1,3 @@
-from pathlib import Path
 import astropy.units as u
 import numpy as np
 import xarray as xr
@@ -8,7 +7,6 @@ from astropy.coordinates import EarthLocation
 from neclib.coordinates import Observer, CoordCalculator
 from neclib.core.files import toml
 from neclib.core import RichParameters
-from nercst import core
 import necstdb
 
 
