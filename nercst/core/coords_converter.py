@@ -10,14 +10,19 @@ from neclib.coordinates import PointingError
 
 def add_celestial_coords(array: xr.DataArray, frame: str, pepath: str) -> xr.DataArray:
     pe = PointingError.from_file(pepath)
-    lon, lat = pe.apparent_to_refracted(
-        array["lon"].values * u.deg,
-        array["lat"].values * u.deg,
-    )
+    lon_list = []
+    lat_list = []
+    for _lon, _lat in zip(array["lon"].values, array["lat"].values):
+        lon, lat = pe.apparent_to_refracted(
+            _lon * u.deg,
+            _lat * u.deg,
+        )
+        lon_list.append(lon)
+        lat_list.append(lat)
     target_frame = parse_frame(frame)
     obstime = Time(array.t, format="unix")
     lon_lat = SkyCoord(
-        lon, lat, frame="altaz", obstime=obstime, location=config.location
+        lon_list, lat_list, frame="altaz", obstime=obstime, location=config.location
     ).transform_to(target_frame)
     if "fk5" in target_frame.name:
         array = array.assign_coords({"lon_cor": ("t", lon_lat.ra.value)})
