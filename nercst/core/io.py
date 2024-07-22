@@ -10,7 +10,7 @@ from pathlib import Path
 from datetime import datetime
 from typing import Union, Literal, get_args
 from nercst.core.coords_converter import add_celestial_coords
-from nercst.core.spectrometer_channel import add_radial_velocity
+from nercst.core.obsvelocity_utils import add_radial_velocity
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
@@ -166,9 +166,11 @@ def loaddb(
     pointing_parampath = Path(dbname + "/pointing_param.toml")
     obs_filepath = Path(glob(dbname + "/*.obs")[0])
     config_filepath = Path(glob(dbname + "/config.toml")[0])
+    device_setting_path = Path(dbname + "/device_setting.toml")
     loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
     loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
     loaded = loaded.assign_attrs(config_filepath=config_filepath)
+    loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
 
     if pe_cor:
         frame = neclib.core.files.toml.read(obs_filepath)["coordinate"]["coord_sys"]
