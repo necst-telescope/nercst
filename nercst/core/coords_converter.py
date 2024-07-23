@@ -1,7 +1,6 @@
 import astropy.units as u
 import xarray as xr
 
-from neclib import config
 from astropy.time import Time
 from astropy.coordinates import EarthLocation
 from neclib.coordinates import parse_frame
