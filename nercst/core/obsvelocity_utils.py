@@ -72,7 +72,7 @@ def get_vlsr(
     v_obs_array = calc_vobs(
         spec_array.lon_cor.data, spec_array.lat_cor.data, spec_array.t.data, location
     )
-    observed_v_matrix = observed_v_array * np.ones(shape=data_array.shape)
+    observed_v_matrix = observed_v_array * np.ones(shape=spec_array.shape)
     velocity_array = observed_v_matrix + v_obs_array.reshape(-1, 1)
     return velocity_array
 
