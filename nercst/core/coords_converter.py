@@ -1,15 +1,21 @@
 import astropy.units as u
 import xarray as xr
-import numpy as np
 
 from neclib import config
 from astropy.time import Time
+from astropy.coordinates import EarthLocation
 from neclib.coordinates import parse_frame
 from astropy.coordinates import SkyCoord
 from neclib.coordinates import PointingError
+from neclib.core import RichParameters
 
 
-def add_celestial_coords(array: xr.DataArray, frame: str, pepath: str) -> xr.DataArray:
+def add_celestial_coords(array: xr.DataArray, frame: str) -> xr.DataArray:
+    config_filepath = array.attrs["config_filepath"]
+    config = RichParameters.from_file(config_filepath)
+    config.attach_parsers(location=lambda x: EarthLocation(**x))
+
+    pepath = array.attrs["pointing_params_path"]
     pe = PointingError.from_file(pepath)
     lon_list = []
     lat_list = []
@@ -20,12 +26,10 @@ def add_celestial_coords(array: xr.DataArray, frame: str, pepath: str) -> xr.Dat
         )
         lon_list.append(lon)
         lat_list.append(lat)
-    lon_arr = np.array(lon_list)
-    lat_arr = np.array(lat_list)
     target_frame = parse_frame(frame)
     obstime = Time(array.t, format="unix")
     lon_lat = SkyCoord(
-        lon_arr, lat_arr, frame="altaz", obstime=obstime, location=config.location
+        lon_list, lat_list, frame="altaz", obstime=obstime, location=config.location
     ).transform_to(target_frame)
     if "fk5" in target_frame.name:
         array = array.assign_coords({"lon_cor": ("t", lon_lat.ra.value)})

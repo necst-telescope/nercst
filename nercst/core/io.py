@@ -174,10 +174,10 @@ def loaddb(
 
     if pe_cor:
         frame = neclib.core.files.toml.read(obs_filepath)["coordinate"]["coord_sys"]
-        loaded = add_celestial_coords(loaded, frame, pointing_parampath)
+        loaded = add_celestial_coords(loaded, frame)
         if dop_cor:
             loaded = add_radial_velocity(
-                data_array=loaded, dbname=dbname, topic_name=spec_topicname
+                spec_array=loaded, dbname=dbname, topic_name=spec_topicname
             )
     else:
         if dop_cor:
