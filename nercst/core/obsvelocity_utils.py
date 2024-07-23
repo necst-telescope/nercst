@@ -17,16 +17,16 @@ logger.addHandler(st_handler)
 
 def calc_vobs(ra_array, dec_array, obstime_array, location):
 
-    obs = Observer(location)
+    observer = Observer(location)
     logger.info("Calculating Vobs...")
-    v_obs = obs.v_obs(
+    v_obs = observer.v_obs(
         lon=ra_array, lat=dec_array, time=obstime_array, frame="icrs", unit="deg"
     )
     return v_obs
 
 
 def convert_to_velocity(
-    channel_array,
+    channel_integer_numbers,
     freq_resolution,
     factor_1st_lo,
     freq_1st_lo,
@@ -36,11 +36,11 @@ def convert_to_velocity(
 ):
 
     logger.info("Converting channel into velocity...")
-    observed_GHz_array = channel_array * freq_resolution
+    obsfreq_array = channel_integer_numbers * freq_resolution
     if side_band == "usb":
-        pre_hd_array = (observed_GHz_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
+        pre_hd_array = (obsfreq_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
     elif side_band == "lsb":
-        pre_hd_array = (-observed_GHz_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
+        pre_hd_array = (-obsfreq_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
     freq_to_velocity_equiv = u.doppler_radio(observation_frequency)
     observed_v_array = pre_hd_array.to(
         u.km * u.s ** (-1), equivalencies=freq_to_velocity_equiv
@@ -50,7 +50,7 @@ def convert_to_velocity(
 
 
 def get_vlsr(
-    data_array,
+    spec_array,
     freq_resolution,
     factor_1st_lo,
     freq_1st_lo,
@@ -59,9 +59,9 @@ def get_vlsr(
     observation_frequency,
     location,
 ):
-    channel_array = data_array.channel.data
+    channel_integer_numbers = spec_array.channel.data
     observed_v_array = convert_to_velocity(
-        channel_array,
+        channel_integer_numbers,
         freq_resolution,
         factor_1st_lo,
         freq_1st_lo,
@@ -70,7 +70,7 @@ def get_vlsr(
         observation_frequency,
     )
     v_obs_array = calc_vobs(
-        data_array.lon_cor.data, data_array.lat_cor.data, data_array.t.data, location
+        spec_array.lon_cor.data, spec_array.lat_cor.data, spec_array.t.data, location
     )
     observed_v_matrix = observed_v_array * np.ones(shape=data_array.shape)
     velocity_array = observed_v_matrix + v_obs_array.reshape(-1, 1)
@@ -100,10 +100,10 @@ def get_lo(dbname, side_band):
     return freq_1st_lo, freq_2nd_lo
 
 
-def add_radial_velocity(data_array, dbname, topic_name):
+def add_radial_velocity(spec_array, dbname, topic_name):
     board_id = int(topic_name[-1])
-    config_filepath = data_array.attrs["config_filepath"]
-    device_setting_filepath = data_array.attrs["device_setting_path"]
+    config_filepath = spec_array.attrs["config_filepath"]
+    device_setting_filepath = spec_array.attrs["device_setting_path"]
     logger.info(f"read config file from {config_filepath}.")
     config = RichParameters.from_file(config_filepath)
     logger.info(f"read device setting file from {device_setting_filepath}.")
@@ -116,7 +116,7 @@ def add_radial_velocity(data_array, dbname, topic_name):
         dbname, setting.spectrometer.side_band[str(board_id)]
     )
     velocity_array = get_vlsr(
-        data_array,
+        spec_array,
         freq_resolution,
         setting.multiplier.factor_1st_lo,
         freq_1st_lo,
@@ -125,5 +125,5 @@ def add_radial_velocity(data_array, dbname, topic_name):
         config.observation_frequency,
         config.location,
     )
-    ds = make_dataset(data_array, velocity_array)
+    ds = make_dataset(spec_array, velocity_array)
     return ds
