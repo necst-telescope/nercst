@@ -173,7 +173,6 @@ def loaddb(
     loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
 
     if pe_cor:
-        frame = neclib.core.files.toml.read(obs_filepath)["coordinate"]["coord_sys"]
         loaded = add_celestial_coords(loaded)
         if dop_cor:
             loaded = add_radial_velocity(
