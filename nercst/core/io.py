@@ -9,8 +9,10 @@ from glob import glob
 from pathlib import Path
 from datetime import datetime
 from typing import Union, Literal, get_args
-from nercst.core.coords_converter import add_celestial_coords
-from nercst.core.obsvelocity_utils import add_radial_velocity
+from nercst.core.multidimensional_coordinates import (
+    add_celestial_coords,
+    add_radial_velocity,
+)
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
