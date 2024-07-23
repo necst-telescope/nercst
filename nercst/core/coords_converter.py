@@ -1,5 +1,6 @@
 import astropy.units as u
 import xarray as xr
+import numpy as np
 
 from neclib import config
 from astropy.time import Time
@@ -19,10 +20,12 @@ def add_celestial_coords(array: xr.DataArray, frame: str, pepath: str) -> xr.Dat
         )
         lon_list.append(lon)
         lat_list.append(lat)
+    lon_arr = np.array(lon_list)
+    lat_arr = np.array(lat_list)
     target_frame = parse_frame(frame)
     obstime = Time(array.t, format="unix")
     lon_lat = SkyCoord(
-        lon_list, lat_list, frame="altaz", obstime=obstime, location=config.location
+        lon_arr, lat_arr, frame="altaz", obstime=obstime, location=config.location
     ).transform_to(target_frame)
     if "fk5" in target_frame.name:
         array = array.assign_coords({"lon_cor": ("t", lon_lat.ra.value)})
