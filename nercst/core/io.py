@@ -69,7 +69,7 @@ def loaddb(
     spec_topicname: TypeBoards,
     telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
     pe_cor=True,
-    dop_cor=True,
+    dop_cor=False,
 ):
     """Data loader for the necst telescopes
 
@@ -162,14 +162,14 @@ def loaddb(
     loaded["t"] = data[data_tlabel]
     loaded["ch"] = pd.Index(np.arange(32768))
 
-    pointing_parampath = Path(dbname + "/pointing_param.toml")
-    obs_filepath = Path(glob(dbname + "/*.obs")[0])
-    config_filepath = Path(glob(dbname + "/config.toml")[0])
-    device_setting_path = Path(dbname + "/device_setting.toml")
+    pointing_parampath = Path(str(dbname) + "/pointing_param.toml")
+    # obs_filepath = Path(glob(str(dbname) + "/*.obs")[0])
+    config_filepath = Path(glob(str(dbname) + "/config.toml")[0])
+    # device_setting_path = Path(str(dbname) + "/device_setting.toml")
     loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
-    loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
+    # loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
     loaded = loaded.assign_attrs(config_filepath=config_filepath)
-    loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
+    # loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
 
     if pe_cor:
         loaded = add_celestial_coords(loaded)
