@@ -163,13 +163,13 @@ def loaddb(
     loaded["ch"] = pd.Index(np.arange(32768))
 
     pointing_parampath = Path(str(dbname) + "/pointing_param.toml")
-    # obs_filepath = Path(glob(str(dbname) + "/*.obs")[0])
-    config_filepath = Path(glob(str(dbname) + "/config.toml")[0])
-    # device_setting_path = Path(str(dbname) + "/device_setting.toml")
+    obs_filepath = Path(glob(str(dbname) + "/*.obs")[0])
+    config_filepath = Path(glob(str(dbname) + "/*config.toml")[0])
+    device_setting_path = Path(str(dbname) + "/device_setting.toml")
     loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
-    # loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
+    loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
     loaded = loaded.assign_attrs(config_filepath=config_filepath)
-    # loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
+    loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
 
     if pe_cor:
         loaded = add_celestial_coords(loaded)
