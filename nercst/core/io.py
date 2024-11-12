@@ -13,24 +13,6 @@ from .multidimensional_coordinates import add_celestial_coords, add_radial_veloc
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
-TypeBoards = Literal[
-    "xffts_board01",
-    "xffts_board02",
-    "xffts_board03",
-    "xffts_board04",
-    "xffts_board05",
-    "xffts_board06",
-    "xffts_board07",
-    "xffts_board08",
-    "xffts_board09",
-    "xffts_board10",
-    "xffts_board11",
-    "xffts_board12",
-    "xffts_board13",
-    "xffts_board14",
-    "xffts_board15",
-    "xffts_board16",
-]
 
 
 def get_timelabel(structure: np.ndarray):
@@ -66,8 +48,8 @@ def get_time_indexed_df(structure: np.ndarray, tlabel):
 
 def loaddb(
     dbname: PathLike,
-    spec_topicname: TypeBoards,
-    telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
+    board: str,
+    telescop: Literal["NANTEN2", "OMU1P85M", "previous"],
     pe_cor=True,
     dop_cor=False,
 ):
@@ -77,25 +59,23 @@ def loaddb(
     ----------
     dbname : PathLike
         File path for the data to be loaded
-    spec_topicname : TypeBoards
-        Topic name to specify the spectroscopic data. You can subtract
-        the topic key for the spectroscopic data using
-        the `topic_getter` function.
-    telescop : Literal["NANTEN2", "OPU1.85", "Common"]
-        Use default parameter ``Common`` if you are using the
-        NECST v4 system. ``NANTEN2``, ``OPU-1.85`` are for the NECST v2
-        and v3,respectively.
+    board : str
+        For NECST v4 system, the ``necst-{telescop}-data-spectral-{board}`` is loaded if you use parameter such as ``xffts-board1`` or ``ac240_1-board1` in {board}.
+        Use parameter such as ``xffts_board01`` for NECST v2 or v3.
+    telescop : Literal["NANTEN2", "OMU1P85M", "previous"]
+        Use parameter ``NANTEN2`` and ``OMU1P85M`` if you are using the
+        NECST v4 system. ``previous`` is for the NECST v2 or v3.
 
     Examples
     --------
     >>> from nercst.core import io
-    >>> array = io.loaddb("path/to/necstdb")
+    >>> array = io.loaddb("path/to/necstdb", "spec-topic-name", "NANTEN2")
 
     """
 
-    if telescop == "NANTEN2":
+    if telescop == "previous":
         db = necstdb.opendb(dbname)
-        data = db.open_table(spec_topicname).read(astype="array")
+        data = db.open_table(board).read(astype="array")
         encoder = db.open_table("status_encoder").read(astype="array")
         weather = db.open_table("status_weather").read(astype="array")
         spec_label = "spec"
@@ -111,8 +91,9 @@ def loaddb(
                 fields.append("position")
         obsmode.dtype.names = tuple(fields)
 
-    elif telescop == "Common":
+    else:
         db = necstdb.opendb(dbname)
+        spec_topicname = f"necst-{telescop}-data-spectral-{board}"
         data = db.open_table(spec_topicname).read(astype="array")
         obsmode = db.open_table(spec_topicname).read(
             astype="array", cols=["time", "position"]
@@ -120,10 +101,10 @@ def loaddb(
         scan_num = db.open_table(spec_topicname).read(
             astype="array", cols=["time", "id"]
         )
-        encoder = db.open_table("necst-OMU1P85M-ctrl-antenna-encoder").read(
+        encoder = db.open_table("necst-{telescop}-ctrl-antenna-encoder").read(
             astype="array"
         )
-        weather = db.open_table("necst-OMU1P85M-weather-ambient").read(astype="array")
+        weather = db.open_table("necst-{telescop}-weather-ambient").read(astype="array")
         spec_label = "data"
 
     data_tlabel = get_timelabel(data)
@@ -164,7 +145,7 @@ def loaddb(
 
     pointing_parampath = Path(str(dbname) + "/pointing_param.toml")
     obs_filepath = Path(glob(str(dbname) + "/*.obs")[0])
-    config_filepath = Path(glob(str(dbname) + "/*config.toml")[0])
+    config_filepath = Path(glob(str(dbname) + f"/{telescop}_config.toml")[0])
     device_setting_path = Path(str(dbname) + "/device_setting.toml")
     loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
     loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
