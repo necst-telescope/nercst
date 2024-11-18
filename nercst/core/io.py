@@ -14,6 +14,25 @@ from .multidimensional_coordinates import add_celestial_coords, add_radial_veloc
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
+TypeBoards = Literal[
+    "xffts_board01",
+    "xffts_board02",
+    "xffts_board03",
+    "xffts_board04",
+    "xffts_board05",
+    "xffts_board06",
+    "xffts_board07",
+    "xffts_board08",
+    "xffts_board09",
+    "xffts_board10",
+    "xffts_board11",
+    "xffts_board12",
+    "xffts_board13",
+    "xffts_board14",
+    "xffts_board15",
+    "xffts_board16",
+]
+
 
 logger = logging.getLogger("necst")
 if logger.hasHandlers():
@@ -197,22 +216,15 @@ def loaddb(
 
 def topic_getter(dbname: PathLike):
     db = necstdb.opendb(dbname)
-    config = neclib.config
-
-    prefix = f"necst-{config.observatory}-"
     spectral_data = [
-        tablename
-        for tablename in db.list_tables()
-        if tablename.startswith(prefix + "data-spectral")
+        tablename for tablename in db.list_tables() if "data-spectral" in tablename
     ]
 
-    args = get_args(TypeBoards)
-    topics = db.list_tables()
-    args_set = set(args)
-    topic_set = set(topics)
-    spectral_data = set(spectral_data)
-
-    if len(list(args_set & topic_set)) == 0:
-        return spectral_data
-    else:
+    if len(spectral_data) == 0:
+        args = get_args(TypeBoards)
+        topics = db.list_tables()
+        args_set = set(args)
+        topic_set = set(topics)
         return list(args_set & topic_set)
+    else:
+        return spectral_data
