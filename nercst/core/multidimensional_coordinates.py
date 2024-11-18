@@ -154,9 +154,14 @@ def add_celestial_coords(array: xr.DataArray) -> xr.DataArray:
     location = read_location(array)
     lon_lat = SkyCoord(
         lon_list, lat_list, frame="altaz", obstime=obstime, location=location
+    )
+    array = array.assign_coords({"lon_cor": ("t", lon_lat.az.value)})
+    array = array.assign_coords({"lat_cor": ("t", lon_lat.alt.value)})
+    radec_lat = SkyCoord(
+        lon_list, lat_list, frame="altaz", obstime=obstime, location=location
     ).transform_to("icrs")
-    array = array.assign_coords({"ra_cor": ("t", lon_lat.ra.value)})
-    array = array.assign_coords({"dec_cor": ("t", lon_lat.dec.value)})
+    array = array.assign_coords({"ra_cor": ("t", radec_lat.ra.value)})
+    array = array.assign_coords({"dec_cor": ("t", radec_lat.dec.value)})
     return array
 
 
