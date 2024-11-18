@@ -10,7 +10,6 @@ Ch = Literal["ch"]
 
 @dataclass(frozen=True)
 class TimeSeriesArray(AsDataArray):
-
     """Specification for NERCST basic array"""
 
     # TODO: automatic generation from neclib.config and/or ROS topic list
@@ -19,14 +18,14 @@ class TimeSeriesArray(AsDataArray):
     ch: Coord[Ch, int] = 0
     vrad: Coord[T, float] = 0
     time: Coord[T, float] = 0
-    in_temp: Coord[T, float] = 0
-    out_temp: Coord[T, float] = 0
-    in_humi: Coord[T, float] = 0
-    out_humi: Coord[T, float] = 0
-    wind_sp: Coord[T, float] = 0
-    wind_dir: Coord[T, float] = 0
-    press: Coord[T, float] = 0
-    rain: Coord[T, float] = 0
+    in_temperature: Coord[T, float] = 0
+    temperature: Coord[T, float] = 0
+    in_humidity: Coord[T, float] = 0
+    humidity: Coord[T, float] = 0
+    wind_speed: Coord[T, float] = 0
+    wind_direction: Coord[T, float] = 0
+    pressure: Coord[T, float] = 0
+    rain_rate: Coord[T, float] = 0
     cabin_temp1: Coord[T, float] = 0
     cabin_temp2: Coord[T, float] = 0
     dome_temp1: Coord[T, float] = 0
