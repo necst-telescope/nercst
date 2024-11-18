@@ -69,7 +69,10 @@ def loaddb(
     Examples
     --------
     >>> from nercst.core import io
-    >>> array = io.loaddb("path/to/necstdb", "spec-topic-name", "NANTEN2")
+    >>> array_n2 = io.loaddb("path/to/necstdb", "xffts-board1", "NANTEN2")
+    >>> array_1p85 = io.loaddb("path/to/necstdb", "xffts-board1", "OMU1p85m")
+    >>> array_1p85_old = io.loaddb("path/to/necstdb", "board1", "OMU1p85m")
+    >>> array_v2 = io.loaddb("path/to/necstdb", "xffts_board01", "previous")
 
     """
 
