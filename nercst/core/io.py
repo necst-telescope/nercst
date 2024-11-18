@@ -142,7 +142,7 @@ def loaddb(
     )
 
     loaded["t"] = data[data_tlabel]
-    loaded["ch"] = pd.Index(np.arange(data["data"].shape[1]))
+    loaded["ch"] = pd.Index(np.arange(data[spec_label].shape[1]))
 
     config_filepath_list = [
         Path(file_path) for file_path in glob(str(dbname) + f"/*config.toml")
