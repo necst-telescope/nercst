@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import nercst
 import os
-import neclib
 from glob import glob
 import logging
 
@@ -87,7 +86,9 @@ def loaddb(
     dbname : PathLike
         File path for the data to be loaded
     board : str
-        For NECST v4 system, the ``necst-{telescop}-data-spectral-{board}`` is loaded if you use parameter such as ``xffts-board1`` or ``ac240_1-board1` in {board}.
+        For NECST v4 system, the ``necst-{telescop}-data-spectral-{board}``
+        is loaded if you use parameter such as ``xffts-board1`` or
+        ``ac240_1-board1` in {board}.
         Use parameter such as ``xffts_board01`` for NECST v2 or v3.
     telescop : Literal["NANTEN2", "OMU1p85m", "previous"]
         Use parameter ``NANTEN2`` and ``OMU1p85m`` if you are using the
@@ -175,7 +176,7 @@ def loaddb(
     loaded["ch"] = pd.Index(np.arange(data[spec_label].shape[1]))
 
     config_filepath_list = [
-        Path(file_path) for file_path in glob(str(dbname) + f"/*config.toml")
+        Path(file_path) for file_path in glob(str(dbname) + "/*config.toml")
     ]
     if len(config_filepath_list) == 1:
         loaded = loaded.assign_attrs(config_filepath=config_filepath_list[0])
@@ -194,7 +195,10 @@ def loaddb(
         pointing_parampath_list = glob(str(dbname) + "/pointing_param.toml")
         if len(pointing_parampath_list) == 0:
             logger.warning(
-                f"File of pointing_params dose not exist in {dbname}. Assign pointing_parampath manually; `loaded = loaded.assign_attrs(pointing_params_path=``pointing_parampath'')` and then execute `loaded = add_celestial_coords(loaded)`."
+                f"File of pointing_params dose not exist in {dbname}."
+                " Assign pointing_parampath manually;"
+                " `loaded.assign_attrs(pointing_params_path=``pointing_parampath'')`"
+                " and then execute `add_celestial_coords(loaded)`."
             )
         else:
             loaded = loaded.assign_attrs(
