@@ -5,6 +5,7 @@ import nercst
 import os
 import neclib
 from glob import glob
+import logging
 
 from pathlib import Path
 from datetime import datetime
@@ -13,6 +14,13 @@ from .multidimensional_coordinates import add_celestial_coords, add_radial_veloc
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
+
+logger = logging.getLogger("necst")
+if logger.hasHandlers():
+    logger.handlers.clear()
+logger.setLevel(logging.DEBUG)
+st_handler = logging.StreamHandler()
+logger.addHandler(st_handler)
 
 
 def get_timelabel(structure: np.ndarray):
@@ -86,7 +94,7 @@ def loaddb(
             weather = db.open_table("status_weather").read(astype="array")
             array_list.append(weather)
         except Exception as e:
-            print(e)
+            logger.warning(e)
 
         spec_label = "spec"
         data_tlabel = get_timelabel(data)
@@ -124,7 +132,7 @@ def loaddb(
             )
             array_list.append(weather)
         except Exception as e:
-            print(e)
+            logger.warning(e)
         spec_label = "data"
 
     data_tlabel = get_timelabel(data)
@@ -164,9 +172,16 @@ def loaddb(
         pass
 
     if pe_cor:
-        pointing_parampath = Path(str(dbname) + "/pointing_param.toml")
-        loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
-        loaded = add_celestial_coords(loaded)
+        pointing_parampath_list = glob(str(dbname) + "/pointing_param.toml")
+        if len(pointing_parampath_list) == 0:
+            logger.warning(
+                f"File of pointing_params dose not exist in {dbname}. Assign pointing_parampath manually; `loaded = loaded.assign_attrs(pointing_params_path=``pointing_parampath'')` and then execute `loaded = add_celestial_coords(loaded)`."
+            )
+        else:
+            loaded = loaded.assign_attrs(
+                pointing_params_path=Path(pointing_parampath_list[0])
+            )
+            loaded = add_celestial_coords(loaded)
         if dop_cor:
             device_setting_path = Path(str(dbname) + "/device_setting.toml")
             loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
