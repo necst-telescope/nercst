@@ -186,6 +186,6 @@ def convert_frame(array: xr.DataArray, frame: str) -> xr.DataArray:
         array = array.assign_coords({"l_cor": ("t", coords.l.value)})
         array = array.assign_coords({"b_cor": ("t", coords.b.value)})
     if "altaz" in target_frame.name:
-        array = array.assign_coords({"lon_cor": ("t", coords.az.value)})
-        array = array.assign_coords({"lat_cor": ("t", coords.alt.value)})
+        array = array.assign_coords({"lon_recor": ("t", coords.az.value)})
+        array = array.assign_coords({"lat_recor": ("t", coords.alt.value)})
     return array
