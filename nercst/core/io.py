@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import nercst
 import os
-import neclib
 from glob import glob
+import logging
 
 from pathlib import Path
 from datetime import datetime
@@ -31,6 +31,14 @@ TypeBoards = Literal[
     "xffts_board15",
     "xffts_board16",
 ]
+
+
+logger = logging.getLogger("necst")
+if logger.hasHandlers():
+    logger.handlers.clear()
+logger.setLevel(logging.DEBUG)
+st_handler = logging.StreamHandler()
+logger.addHandler(st_handler)
 
 
 def get_timelabel(structure: np.ndarray):
@@ -66,10 +74,10 @@ def get_time_indexed_df(structure: np.ndarray, tlabel):
 
 def loaddb(
     dbname: PathLike,
-    spec_topicname: TypeBoards,
-    telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
+    board: str,
+    telescop: Literal["NANTEN2", "OMU1p85m", "previous"],
     pe_cor=True,
-    dop_cor=True,
+    dop_cor=False,
 ):
     """Data loader for the necst telescopes
 
@@ -77,27 +85,37 @@ def loaddb(
     ----------
     dbname : PathLike
         File path for the data to be loaded
-    spec_topicname : TypeBoards
-        Topic name to specify the spectroscopic data. You can subtract
-        the topic key for the spectroscopic data using
-        the `topic_getter` function.
-    telescop : Literal["NANTEN2", "OPU1.85", "Common"]
-        Use default parameter ``Common`` if you are using the
-        NECST v4 system. ``NANTEN2``, ``OPU-1.85`` are for the NECST v2
-        and v3,respectively.
+    board : str
+        For NECST v4 system, the ``necst-{telescop}-data-spectral-{board}``
+        is loaded if you use parameter such as ``xffts-board1`` or
+        ``ac240_1-board1` in {board}.
+        Use parameter such as ``xffts_board01`` for NECST v2 or v3.
+    telescop : Literal["NANTEN2", "OMU1p85m", "previous"]
+        Use parameter ``NANTEN2`` and ``OMU1p85m`` if you are using the
+        NECST v4 system. ``previous`` is for the NECST v2 or v3.
 
     Examples
     --------
     >>> from nercst.core import io
-    >>> array = io.loaddb("path/to/necstdb")
+    >>> array_n2 = io.loaddb("path/to/necstdb", "xffts-board1", "NANTEN2")
+    >>> array_1p85 = io.loaddb("path/to/necstdb", "xffts-board1", "OMU1p85m")
+    >>> array_1p85_old = io.loaddb("path/to/necstdb", "board1", "OMU1p85m")
+    >>> array_v2 = io.loaddb("path/to/necstdb", "xffts_board01", "previous")
 
     """
 
-    if telescop == "NANTEN2":
+    array_list = []
+    if telescop == "previous":
         db = necstdb.opendb(dbname)
-        data = db.open_table(spec_topicname).read(astype="array")
+        data = db.open_table(board).read(astype="array")
         encoder = db.open_table("status_encoder").read(astype="array")
-        weather = db.open_table("status_weather").read(astype="array")
+        array_list.append(encoder)
+        try:
+            weather = db.open_table("status_weather").read(astype="array")
+            array_list.append(weather)
+        except Exception as e:
+            logger.warning(e)
+
         spec_label = "spec"
         data_tlabel = get_timelabel(data)
 
@@ -110,48 +128,43 @@ def loaddb(
             else:
                 fields.append("position")
         obsmode.dtype.names = tuple(fields)
+        array_list.append(obsmode)
 
-    elif telescop == "Common":
+    else:
         db = necstdb.opendb(dbname)
+        spec_topicname = f"necst-{telescop.upper()}-data-spectral-{board}"
         data = db.open_table(spec_topicname).read(astype="array")
         obsmode = db.open_table(spec_topicname).read(
             astype="array", cols=["time", "position"]
         )
+        array_list.append(obsmode)
         scan_num = db.open_table(spec_topicname).read(
             astype="array", cols=["time", "id"]
         )
-        encoder = db.open_table("necst-OMU1P85M-ctrl-antenna-encoder").read(
+        array_list.append(scan_num)
+        encoder = db.open_table(f"necst-{telescop.upper()}-ctrl-antenna-encoder").read(
             astype="array"
         )
-        weather = db.open_table("necst-OMU1P85M-weather-ambient").read(astype="array")
+        array_list.append(encoder)
+        try:
+            weather = db.open_table(f"necst-{telescop.upper()}-weather-ambient").read(
+                astype="array"
+            )
+            array_list.append(weather)
+        except Exception as e:
+            logger.warning(e)
         spec_label = "data"
 
     data_tlabel = get_timelabel(data)
 
-    enc_tlabel = get_timelabel(encoder)
-    df_enc = get_time_indexed_df(encoder, enc_tlabel)
-    df_enc = df_enc.sort_index().reindex(index=data[data_tlabel], method="bfill")
+    df_reindex_list = []
+    for array in array_list:
+        array_tlabel = get_timelabel(array)
+        _df = get_time_indexed_df(array, array_tlabel)
+        _df = _df.sort_index().reindex(index=data[data_tlabel], method="bfill")
+        df_reindex_list.append(_df)
 
-    obs_tlabel = get_timelabel(obsmode)
-    df_obsmode = get_time_indexed_df(obsmode, obs_tlabel)
-    df_obsmode = df_obsmode.sort_index().reindex(
-        index=data[data_tlabel], method="bfill"
-    )
-
-    df_scan_num = get_time_indexed_df(scan_num, data_tlabel)
-    df_scan_num = df_scan_num.sort_index().reindex(
-        index=data[data_tlabel], method="bfill"
-    )
-
-    weather_tlabel = get_timelabel(weather)
-    df_weather = get_time_indexed_df(weather, weather_tlabel)
-    df_weather = df_weather.sort_index().reindex(
-        index=data[data_tlabel], method="bfill"
-    )
-
-    time_coords = pd.concat(
-        [df_enc, df_weather, df_obsmode, df_scan_num], axis=1
-    ).to_dict(orient="list")
+    time_coords = pd.concat(df_reindex_list, axis=1).to_dict(orient="list")
     channel_coords = {"channel": np.arange(len(data[spec_label][0]))}
     loaded = nercst.core.struct.make_time_series_array(
         data[spec_label],
@@ -160,20 +173,41 @@ def loaddb(
     )
 
     loaded["t"] = data[data_tlabel]
-    loaded["ch"] = pd.Index(np.arange(32768))
+    loaded["ch"] = pd.Index(np.arange(data[spec_label].shape[1]))
 
-    pointing_parampath = Path(dbname + "/pointing_param.toml")
-    obs_filepath = Path(glob(dbname + "/*.obs")[0])
-    config_filepath = Path(glob(dbname + "/config.toml")[0])
-    device_setting_path = Path(dbname + "/device_setting.toml")
-    loaded = loaded.assign_attrs(pointing_params_path=pointing_parampath)
-    loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
-    loaded = loaded.assign_attrs(config_filepath=config_filepath)
-    loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
+    config_filepath_list = [
+        Path(file_path) for file_path in glob(str(dbname) + "/*config.toml")
+    ]
+    if len(config_filepath_list) == 1:
+        loaded = loaded.assign_attrs(config_filepath=config_filepath_list[0])
+    else:
+        for file_path in config_filepath_list:
+            if telescop in file_path.name:
+                loaded = loaded.assign_attrs(config_filepath=file_path)
+
+    try:
+        obs_filepath = Path(glob(str(dbname) + "/*.obs")[0])
+        loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
+    except IndexError:
+        pass
 
     if pe_cor:
-        loaded = add_celestial_coords(loaded)
+        pointing_parampath_list = glob(str(dbname) + "/pointing_param.toml")
+        if len(pointing_parampath_list) == 0:
+            logger.warning(
+                f"File of pointing_params dose not exist in {dbname}."
+                " Assign pointing_parampath manually;"
+                " `loaded.assign_attrs(pointing_params_path=``pointing_parampath'')`"
+                " and then execute `add_celestial_coords(loaded)`."
+            )
+        else:
+            loaded = loaded.assign_attrs(
+                pointing_params_path=Path(pointing_parampath_list[0])
+            )
+            loaded = add_celestial_coords(loaded)
         if dop_cor:
+            device_setting_path = Path(str(dbname) + "/device_setting.toml")
+            loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
             loaded = add_radial_velocity(
                 spec_array=loaded, dbname=dbname, topic_name=spec_topicname
             )
@@ -186,22 +220,15 @@ def loaddb(
 
 def topic_getter(dbname: PathLike):
     db = necstdb.opendb(dbname)
-    config = neclib.config
-
-    prefix = f"necst-{config.observatory}-"
     spectral_data = [
-        tablename
-        for tablename in db.list_tables()
-        if tablename.startswith(prefix + "data-spectral")
+        tablename for tablename in db.list_tables() if "data-spectral" in tablename
     ]
 
-    args = get_args(TypeBoards)
-    topics = db.list_tables()
-    args_set = set(args)
-    topic_set = set(topics)
-    spectral_data = set(spectral_data)
-
-    if len(list(args_set & topic_set)) == 0:
-        return spectral_data
-    else:
+    if len(spectral_data) == 0:
+        args = get_args(TypeBoards)
+        topics = db.list_tables()
+        args_set = set(args)
+        topic_set = set(topics)
         return list(args_set & topic_set)
+    else:
+        return spectral_data

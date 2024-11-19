@@ -154,9 +154,14 @@ def add_celestial_coords(array: xr.DataArray) -> xr.DataArray:
     location = read_location(array)
     lon_lat = SkyCoord(
         lon_list, lat_list, frame="altaz", obstime=obstime, location=location
+    )
+    array = array.assign_coords({"lon_cor": ("t", lon_lat.az.value)})
+    array = array.assign_coords({"lat_cor": ("t", lon_lat.alt.value)})
+    radec_lat = SkyCoord(
+        lon_list, lat_list, frame="altaz", obstime=obstime, location=location
     ).transform_to("icrs")
-    array = array.assign_coords({"ra_cor": ("t", lon_lat.ra.value)})
-    array = array.assign_coords({"dec_cor": ("t", lon_lat.dec.value)})
+    array = array.assign_coords({"ra_cor": ("t", radec_lat.ra.value)})
+    array = array.assign_coords({"dec_cor": ("t", radec_lat.dec.value)})
     return array
 
 
@@ -181,6 +186,6 @@ def convert_frame(array: xr.DataArray, frame: str) -> xr.DataArray:
         array = array.assign_coords({"l_cor": ("t", coords.l.value)})
         array = array.assign_coords({"b_cor": ("t", coords.b.value)})
     if "altaz" in target_frame.name:
-        array = array.assign_coords({"lon_cor": ("t", coords.az.value)})
-        array = array.assign_coords({"lat_cor": ("t", coords.alt.value)})
+        array = array.assign_coords({"lon_recor": ("t", coords.az.value)})
+        array = array.assign_coords({"lat_recor": ("t", coords.alt.value)})
     return array
