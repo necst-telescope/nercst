@@ -64,17 +64,18 @@ class Skydip:
                 secz_list.append(1 / np.cos(z))
         return secz_list, term_list
 
+    @property
     def line_fit(self):
         secz_list, term_list = self.calc_plot()
         tau, intercept = np.polyfit(secz_list, term_list, 1)
         return tau, intercept
 
-    def plot(self, fig: plt.figure = None, ax: plt.axes = None, topicname: str = None):
+    def plot(self, ax: plt.axes = None, title: str = None):
         if ax is None:
             fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         secz_list, term_list = self.calc_plot()
         ax.scatter(secz_list, term_list, marker=".")
-        tau, intercept = self.line_fit()
+        tau, intercept = self.line_fit
         xlims = ax.get_xlim()
         ax.plot(list(xlims), [tau * xlims[0] + intercept, tau * xlims[1] + intercept])
         ax.set_xlabel("sec Z", size=20)
@@ -89,5 +90,6 @@ class Skydip:
             f"tau = {tau_str}",
             size=25,
         )
-        if topicname is not None:
-            ax.set_title(topicname, fontsize=20)
+        if title is not None:
+            ax.set_title(title, fontsize=20)
+        return ax

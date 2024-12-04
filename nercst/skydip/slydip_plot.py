@@ -49,8 +49,7 @@ def plot_all(
         if topicname is not None:
             db = io.loaddb(dbname, topicname, telescop)
             skydip = Skydip(db)
-            skydip.plot(
-                fig,
+            _ax = skydip.plot(
                 ax[i // figsize_y, i % figsize_x],
                 re.search(r"board\d", topicname).group(),
             )
