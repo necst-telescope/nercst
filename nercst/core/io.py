@@ -232,3 +232,15 @@ def topic_getter(dbname: PathLike):
         return list(args_set & topic_set)
     else:
         return spectral_data
+
+
+def board_name_getter(dbname: PathLike):
+    topic_list = topic_getter(dbname)
+    if "data-spectral" in topic_list[0]:
+        board_name_list = []
+        for topic_name in topic_list:
+            splitted = topic_name.partition("data-spectral-")
+            board_name_list.append(splitted[-1])
+    else:
+        board_name_list = topic_list
+    return board_name_list
