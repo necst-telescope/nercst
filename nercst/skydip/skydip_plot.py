@@ -20,7 +20,7 @@ def calc_figsize(topicname_list: list):
 
 def plot_all(
     dbname: Path,
-    telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
+    telescop: Literal["NANTEN2", "OMU1p85m", "previous"],
     save=False,
 ):
     """
@@ -40,20 +40,21 @@ def plot_all(
     >>> skydip.plot_all(dbname)
     (Show results for all topic names.)
     """
-    topicname_list = sorted(io.topic_getter(dbname))
-    figsize_x, figsize_y, topicname_list = calc_figsize(topicname_list)
+    board_list = sorted(io.board_name_getter(dbname))
+    figsize_x, figsize_y, board_list = calc_figsize(board_list)
     fig, ax = plt.subplots(
         figsize_x, figsize_y, figsize=(5 * figsize_x + 3, 5 * figsize_y)
     )
-    for i, topicname in enumerate(topicname_list):
-        if topicname is not None:
-            db = io.loaddb(dbname, topicname, telescop)
+    for i, boad_name in enumerate(board_list):
+        if boad_name is not None:
+            print(f"calc {boad_name}...")
+            db = io.loaddb(dbname, boad_name, telescop)
             skydip = Skydip(db)
             _ax = skydip.plot(
                 ax[i // figsize_y, i % figsize_x],
-                re.search(r"board\d", topicname).group(),
+                re.search(r"board\d", boad_name).group(),
             )
-    plt.tight_layout()
+    fig.tight_layout()
     if save:
         if "skydip" in str(dbname).lower():
             fig.savefig(dbname.with_suffix(".pdf"))
