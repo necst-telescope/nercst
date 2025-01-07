@@ -209,7 +209,7 @@ def loaddb(
             device_setting_path = Path(str(dbname) + "/device_setting.toml")
             loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
             loaded = add_radial_velocity(
-                spec_array=loaded, dbname=dbname, topic_name=spec_topicname
+                spec_array=loaded, dbname=dbname, board=board, telescop=telescop
             )
     else:
         if dop_cor:

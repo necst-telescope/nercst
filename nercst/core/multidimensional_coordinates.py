@@ -89,10 +89,10 @@ def make_dataset(data_array, velocity_array):
     return ds
 
 
-def get_lo(dbname, side_band):
+def get_lo(dbname, band_name, side_band):
     db = necstdb.opendb(dbname)
     topic_list = list(
-        filter(lambda x: re.search("lo_signal.*1st", x), db.list_tables())
+        filter(lambda x: re.search(f"lo_signal.{band_name}_1st", x), db.list_tables())
     )
     data_lo_1st = db.open_table(topic_list[0]).read(astype="array")
     freq_1st_lo = data_lo_1st["freq"][0] * u.GHz
@@ -102,8 +102,7 @@ def get_lo(dbname, side_band):
     return freq_1st_lo, freq_2nd_lo
 
 
-def add_radial_velocity(spec_array, dbname, topic_name):
-    board_id = int(topic_name[-1])
+def add_radial_velocity(spec_array, dbname, board, telescop):
     config_filepath = spec_array.attrs["config_filepath"]
     device_setting_filepath = spec_array.attrs["device_setting_path"]
     logger.info(f"read config file from {config_filepath}.")
@@ -111,20 +110,31 @@ def add_radial_velocity(spec_array, dbname, topic_name):
     logger.info(f"read device setting file from {device_setting_filepath}.")
     setting = RichParameters.from_file(device_setting_filepath)
     config.attach_parsers(location=lambda x: EarthLocation(**x))
-    freq_resolution = (
-        config.spectrometer.bw_MHz[str(board_id)] * u.MHz / config.spectrometer.max_ch
-    )
-    freq_1st_lo, freq_2nd_lo = get_lo(
-        dbname, setting.spectrometer.side_band[str(board_id)]
-    )
+    board_split = board.split("-")
+    board_id = re.sub(r"\D", "", board_split[-1])
+    if len(board_split) == 1:
+        bw = config.spectrometer["bw_MHz"][board_id] * u.MHz
+        max_ch = config.spectrometer["max_ch"]
+    else:
+        board_name = board_split[0]
+        bw = config.spectrometer[board_name]["bw_MHz"][board_id] * u.MHz
+        max_ch = config.spectrometer[board_name]["max_ch"]
+    freq_resolution = bw / max_ch
+    if_name = setting.spectrometer.if_name[board]
+    if_name_split = if_name.split("-")
+    band_name = if_name_split[0]
+    side_band = if_name_split[1]
+    freq_1st_lo, freq_2nd_lo = get_lo(dbname, band_name, side_band)
+    if telescop == "NANTEN2" & side_band == "lsb":
+        side_band = "usb"
     velocity_array = get_vlsr(
         spec_array,
         freq_resolution,
-        setting.multiplier.factor_1st_lo,
+        setting.multiplier[f"factor_{band_name}_lo"],
         freq_1st_lo,
         freq_2nd_lo,
-        setting.spectrometer.side_band[str(board_id)],
-        config.observation_frequency,
+        side_band,
+        setting.rest_frequency.freq[board_id],
         config.location,
     )
     ds = make_dataset(spec_array, velocity_array)
