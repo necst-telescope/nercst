@@ -50,7 +50,7 @@ def plot_all(
             print(f"calc {boad_name}...")
             db = io.loaddb(dbname, boad_name, telescop)
             skydip = Skydip(db)
-            _ax = skydip.plot(
+            _ = skydip.plot(
                 ax[i // figsize_y, i % figsize_x],
                 re.search(r"board\d", boad_name).group(),
             )
