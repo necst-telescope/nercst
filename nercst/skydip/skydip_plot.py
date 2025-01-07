@@ -54,6 +54,7 @@ def plot_all(
                 ax[i // figsize_y, i % figsize_x],
                 re.search(r"board\d", boad_name).group(),
             )
+    fig.suptitle(dbname.stem)
     fig.tight_layout()
     if save:
         if "skydip" in str(dbname).lower():
