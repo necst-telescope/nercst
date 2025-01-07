@@ -72,28 +72,34 @@ class Skydip:
                     y_err_list.append(np.nan)
                 z = (90 - el_mean_list[i]) * np.pi / 180.0
                 secz_list.append(1 / np.cos(z))
-        return secz_list, term_list, y_err_list
+        return np.array(secz_list), np.array(term_list), np.array(y_err_list)
 
     @property
     def line_fit(self):
-        secz_list, term_list, y_err_list = self.calc_plot()
+        secz_array, term_array, y_err_array = self.calc_plot()
+        masked_secz_array = secz_array[~np.isnan(term_array)]
+        masked_term_array = term_array[~np.isnan(term_array)]
+        masked_y_err_array = y_err_array[~np.isnan(term_array)]
         tau, intercept = np.polyfit(
-            secz_list, term_list, 1, w=[1 / e**2 for e in y_err_list]
+            masked_secz_array,
+            masked_term_array,
+            1,
+            w=[1 / e**2 for e in masked_y_err_array],
         )
         return tau, intercept
 
     def plot(self, ax: plt.axes = None, title: str = None):
         if ax is None:
             fig, ax = plt.subplots(1, 1, figsize=(5, 5))
-        secz_list, term_list, y_err_list = self.calc_plot()
-        ax.scatter(secz_list, term_list, marker=".")
+        secz_array, term_array, y_err_array = self.calc_plot()
+        ax.scatter(secz_array, term_array, marker=".")
         tau, intercept = self.line_fit
         xlims = ax.get_xlim()
         ax.plot(list(xlims), [tau * xlims[0] + intercept, tau * xlims[1] + intercept])
         ax.errorbar(
-            secz_list,
-            term_list,
-            yerr=y_err_list,
+            secz_array,
+            term_array,
+            yerr=y_err_array,
             capsize=4,
             fmt="o",
             ecolor="k",
@@ -108,7 +114,7 @@ class Skydip:
         tau_str = str(round(abs(tau), 3))
         ax.text(
             xlims[0],
-            np.nanmin(term_list),
+            np.nanmin(term_array),
             r"$\tau = $" + f"{tau_str}",
             size=25,
         )
