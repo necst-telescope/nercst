@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from typing import Literal
 import numpy as np
-import re
 
 from .skydip import Skydip
 from ..core import io
@@ -52,7 +51,7 @@ def plot_all(
             skydip = Skydip(db)
             _ = skydip.plot(
                 ax[i // figsize_y, i % figsize_x],
-                re.search(r"board\d", boad_name).group(),
+                boad_name,
             )
     fig.suptitle(dbname.stem)
     fig.tight_layout()
