@@ -37,7 +37,7 @@ def plot_all(
 
     Examples
     --------
-    >>> skydip.plot_all(dbname)
+    >>> skydip.plot_all(dbname, "OMU1p85m")
     (Show results for all topic names.)
     """
     board_list = sorted(io.board_name_getter(dbname))
