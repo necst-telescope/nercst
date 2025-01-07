@@ -17,6 +17,8 @@ class Skydip:
     >>> Skydip = skydip.Skydip(data array)
     >>> Skydip.plot()
     (Show result)
+    >>> tau, _ = Skydip.line_fit
+    (get tau)
     """
 
     def __init__(self, data_array: xr.DataArray):
