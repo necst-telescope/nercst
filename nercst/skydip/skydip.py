@@ -75,7 +75,7 @@ class Skydip:
                 z = (90 - el_mean_list[i]) * np.pi / 180.0
                 secz_list.append(1 / np.cos(z))
         self.__secz = np.array(secz_list)
-        self.__term = np.array(term_list)
+        self.__log_hot_sky = np.array(term_list)
         self.__err = np.array(y_err_list)
         return self.__secz, self.__term, self.__err
 
@@ -84,8 +84,8 @@ class Skydip:
         return self.__secz
 
     @property
-    def term(self):
-        return self.__term
+    def log_hot_sky(self):
+        return self.__log_hot_sky
 
     @property
     def err(self):
