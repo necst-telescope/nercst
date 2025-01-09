@@ -66,17 +66,29 @@ class Skydip:
                 sky_std = std_list[i]
                 if hot - sky > 0:
                     term_list.append(np.log(hot - sky))
-                    y_err_list.append(
-                        np.sqrt(hot_std**2 + sky_std**2) / (hot - sky)
-                    )
+                    y_err_list.append(np.sqrt(hot_std**2 + sky_std**2) / (hot - sky))
                 else:
                     term_list.append(np.nan)
                     y_err_list.append(np.nan)
                 z = (90 - el_mean_list[i]) * np.pi / 180.0
                 secz_list.append(1 / np.cos(z))
-        return np.array(secz_list), np.array(term_list), np.array(y_err_list)
+        self.__secz = np.array(secz_list)
+        self.__term = np.array(term_list)
+        self.__err = np.array(y_err_list)
+        return self.__secz, self.__term, self.__err
 
     @property
+    def secz(self):
+        return self.__secz
+
+    @property
+    def term(self):
+        return self.__term
+
+    @property
+    def err(self):
+        return self.__err
+
     def line_fit(self):
         secz_array, term_array, y_err_array = self.calc_plot()
         masked_secz_array = secz_array[~np.isnan(term_array)]
@@ -88,14 +100,19 @@ class Skydip:
             1,
             w=[1 / e**2 for e in masked_y_err_array],
         )
-        return tau, intercept
+        self.__tau = tau
+        return self.__tau, intercept
+
+    @property
+    def tau(self):
+        return self.__tau
 
     def plot(self, ax: plt.axes = None, title: str = None):
         if ax is None:
             fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         secz_array, term_array, y_err_array = self.calc_plot()
         ax.scatter(secz_array, term_array, marker=".")
-        tau, intercept = self.line_fit
+        tau, intercept = self.line_fit()
         xlims = ax.get_xlim()
         ax.plot(list(xlims), [tau * xlims[0] + intercept, tau * xlims[1] + intercept])
         ax.errorbar(
