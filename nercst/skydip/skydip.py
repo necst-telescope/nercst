@@ -66,9 +66,7 @@ class Skydip:
                 sky_std = std_list[i]
                 if hot - sky > 0:
                     term_list.append(np.log(hot - sky))
-                    y_err_list.append(
-                        np.sqrt(hot_std**2 + sky_std**2) / (hot - sky)
-                    )
+                    y_err_list.append(np.sqrt(hot_std**2 + sky_std**2) / (hot - sky))
                 else:
                     term_list.append(np.nan)
                     y_err_list.append(np.nan)
@@ -77,7 +75,7 @@ class Skydip:
         self.__secz = np.array(secz_list)
         self.__log_hot_sky = np.array(term_list)
         self.__err = np.array(y_err_list)
-        return self.__secz, self.__term, self.__err
+        return self.__secz, self.__log_hot_sky, self.__err
 
     @property
     def secz(self):
