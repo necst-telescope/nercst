@@ -66,7 +66,9 @@ class Skydip:
                 sky_std = std_list[i]
                 if hot - sky > 0:
                     term_list.append(np.log(hot - sky))
-                    y_err_list.append(np.sqrt(hot_std**2 + sky_std**2) / (hot - sky))
+                    y_err_list.append(
+                        np.sqrt(hot_std**2 + sky_std**2) / (hot - sky)
+                    )
                 else:
                     term_list.append(np.nan)
                     y_err_list.append(np.nan)
