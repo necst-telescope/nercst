@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from typing import Literal
 import numpy as np
-import re
 
 from .skydip import Skydip
 from ..core import io
@@ -20,7 +19,7 @@ def calc_figsize(topicname_list: list):
 
 def plot_all(
     dbname: Path,
-    telescop: Literal["NANTEN2", "OPU1.85", "Common"] = "Common",
+    telescop: Literal["NANTEN2", "OMU1p85m", "previous"],
     save=False,
 ):
     """
@@ -37,24 +36,27 @@ def plot_all(
 
     Examples
     --------
-    >>> skydip.plot_all(dbname)
+    >>> skydip.plot_all(dbname, "OMU1p85m")
     (Show results for all topic names.)
     """
-    topicname_list = sorted(io.topic_getter(dbname))
-    figsize_x, figsize_y, topicname_list = calc_figsize(topicname_list)
+    if type(dbname) == str:
+        dbname = Path(dbname)
+    board_list = sorted(io.board_name_getter(dbname))
+    figsize_x, figsize_y, board_list = calc_figsize(board_list)
     fig, ax = plt.subplots(
         figsize_x, figsize_y, figsize=(5 * figsize_x + 3, 5 * figsize_y)
     )
-    for i, topicname in enumerate(topicname_list):
-        if topicname is not None:
-            db = io.loaddb(dbname, topicname, telescop)
+    for i, boad_name in enumerate(board_list):
+        if boad_name is not None:
+            print(f"calc {boad_name}...")
+            db = io.loaddb(dbname, boad_name, telescop)
             skydip = Skydip(db)
-            skydip.plot(
-                fig,
+            _ = skydip.plot(
                 ax[i // figsize_y, i % figsize_x],
-                re.search(r"board\d", topicname).group(),
+                boad_name,
             )
-    plt.tight_layout()
+    fig.suptitle(dbname.stem)
+    fig.tight_layout()
     if save:
         if "skydip" in str(dbname).lower():
             fig.savefig(dbname.with_suffix(".pdf"))
