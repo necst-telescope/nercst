@@ -39,6 +39,8 @@ def plot_all(
     >>> skydip.plot_all(dbname, "OMU1p85m")
     (Show results for all topic names.)
     """
+    if type(dbname) == str:
+        dbname = Path(dbname)
     board_list = sorted(io.board_name_getter(dbname))
     figsize_x, figsize_y, board_list = calc_figsize(board_list)
     fig, ax = plt.subplots(
