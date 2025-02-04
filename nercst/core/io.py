@@ -1,7 +1,7 @@
 import necstdb
 import numpy as np
 import pandas as pd
-import nercst
+
 import os
 from glob import glob
 import logging
@@ -9,7 +9,10 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Union, Literal, get_args
+from astropy.coordinates import EarthLocation
 from .multidimensional_coordinates import add_celestial_coords, add_radial_velocity
+from .struct import make_time_series_array
+from neclib.core import RichParameters
 
 PathLike = Union[str, os.PathLike]
 timestamp2datetime = np.vectorize(datetime.utcfromtimestamp)
@@ -166,7 +169,7 @@ def loaddb(
 
     time_coords = pd.concat(df_reindex_list, axis=1).to_dict(orient="list")
     channel_coords = {"channel": np.arange(len(data[spec_label][0]))}
-    loaded = nercst.core.struct.make_time_series_array(
+    loaded = make_time_series_array(
         data[spec_label],
         time_coords=time_coords,
         channel_coords=channel_coords,
@@ -232,3 +235,12 @@ def topic_getter(dbname: PathLike):
         return list(args_set & topic_set)
     else:
         return spectral_data
+
+
+def read_tomlfile(file_path: PathLike):
+    config = RichParameters.from_file(file_path)
+    try:
+        config.attach_parsers(location=lambda x: EarthLocation(**x))
+    except:
+        logger.info("No location info")
+    return config
