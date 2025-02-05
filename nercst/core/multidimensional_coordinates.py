@@ -66,6 +66,17 @@ def get_vlsr(
     observation_frequency: u.Quantity,
     location: EarthLocation,
 ):
+    """Calc radial velocity
+
+    Examples
+    --------
+    >>> from nercst.core import io, multidimensional_coordinates
+    >>> array_1p85 = io.loaddb("path/to/necstdb", "xffts-board1", "OMU1p85m")
+    >>> config = io.read_tomlfile(array_1p85.attrs["config_filepath"])
+    >>> freq_resolution = config.spectrometer.xffts.bw_MHz["1"]*u.MHz / config.spectrometer.xffts.max_ch
+    >>> da_vrad = multidimensional_coordinates.get_vlsr(array_1p85,freq_resolution,factor_1st_lo=12,freq_1st_lo=18.75*u.GHz,freq_2nd_lo=4*u.GHz,"usb",115.27120*u.GHz, config.location)
+    """
+
     channel_integer_numbers = spec_array.channel.data
     observed_v_array = convert_to_velocity(
         channel_integer_numbers,
@@ -114,6 +125,32 @@ def add_radial_velocity(
     telescop: Literal["NANTEN2", "OMU1p85m", "previous"],
     obs_line,
 ):
+    """Add radial velocity array to spectral data array
+
+    Parameters
+    ----------
+    spec_array : xr.DataArray
+        xarray dataarray of spectral data
+    dbname : PathLike
+        File path for the data to be loaded
+    board : str
+        For NECST v4 system, the ``necst-{telescop}-data-spectral-{board}``
+        is loaded if you use parameter such as ``xffts-board1`` or
+        ``ac240_1-board1` in {board}.
+        Use parameter such as ``xffts_board01`` for NECST v2 or v3.
+    telescop : Literal["NANTEN2", "OMU1p85m", "previous"]
+        Use parameter ``NANTEN2`` and ``OMU1p85m`` if you are using the
+        NECST v4 system. ``previous`` is for the NECST v2 or v3.
+    obs_line : str or astropy.Quantity
+        Observed line name listed in analysis_params or frequency. For example, "12CO(1-0)" or 115.27120*u.GHz.
+
+    Examples
+    --------
+    >>> from nercst.core import io, multidimensional_coordinates
+    >>> array_1p85 = io.loaddb("path/to/necstdb", "xffts-board1", "OMU1p85m")
+    >>> ds = multidimensional_coordinates.add_radial_velocity(array_1p85,"path/to/necstdb","xffts-board1", "OMU1p85m", "12CO(2-1)")
+    """
+
     config_filepath = spec_array.attrs["config_filepath"]
     device_setting_filepath = spec_array.attrs["device_setting_path"]
     logger.info(f"read config file from {config_filepath}.")
