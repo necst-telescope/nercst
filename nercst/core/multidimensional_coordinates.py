@@ -11,7 +11,6 @@ import os
 from neclib.coordinates import Observer, parse_frame, PointingError
 from neclib.core import RichParameters
 import necstdb
-from .analysis_params import rest_frequency
 
 PathLike = Union[str, os.PathLike]
 
@@ -19,6 +18,16 @@ logger = logging.getLogger("necst")
 logger.setLevel(logging.DEBUG)
 st_handler = logging.StreamHandler()
 logger.addHandler(st_handler)
+
+rest_frequency = {
+    "12CO(1-0)": 115.271202 * u.GHz,
+    "12CO(2-1)": 230.538000 * u.GHz,
+    "13CO(1-0)": 110.201353 * u.GHz,
+    "13CO(2-1)": 220.398681 * u.GHz,
+    "C18O(1-0)": 109.782173 * u.GHz,
+    "C18O(2-1)": 219.560354 * u.GHz,
+    "SO": 219.940000 * u.GHz,
+}
 
 
 def calc_vobs(ra_array, dec_array, obstime_array, location):
@@ -74,7 +83,7 @@ def get_vlsr(
     >>> array_1p85 = io.loaddb("path/to/necstdb", "xffts-board1", "OMU1p85m")
     >>> config = io.read_tomlfile(array_1p85.attrs["config_filepath"])
     >>> freq_resolution = config.spectrometer.xffts.bw_MHz["1"]*u.MHz / config.spectrometer.xffts.max_ch
-    >>> da_vrad = multidimensional_coordinates.get_vlsr(array_1p85,freq_resolution,factor_1st_lo=12,freq_1st_lo=18.75*u.GHz,freq_2nd_lo=4*u.GHz,"usb",115.27120*u.GHz, config.location)
+    >>> da_vrad = multidimensional_coordinates.get_vlsr(array_1p85,freq_resolution,factor_1st_lo=12,freq_1st_lo=18.75*u.GHz,freq_2nd_lo=4*u.GHz,"usb",230.538*u.GHz, config.location)
     """
 
     channel_integer_numbers = spec_array.channel.data
