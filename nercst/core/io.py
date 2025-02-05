@@ -103,10 +103,10 @@ def loaddb(
     Examples
     --------
     >>> from nercst.core import io
-    >>> array_n2 = io.loaddb("path/to/necstdb", "xffts-board1", "NANTEN2")
-    >>> array_1p85 = io.loaddb("path/to/necstdb", "xffts-board1", "OMU1p85m")
-    >>> array_1p85_old = io.loaddb("path/to/necstdb", "board1", "OMU1p85m")
-    >>> array_v2 = io.loaddb("path/to/necstdb", "xffts_board01", "previous")
+    >>> array_n2 = io.loaddb("path/to/necstdb", "xffts-board1", "NANTEN2", obs_line="12CO(1-0)", pe_cor=True, dop_cor=True)
+    >>> array_1p85 = io.loaddb("path/to/necstdb", "xffts-board1", "OMU1p85m", obs_line=230.538000*u.GHz, pe_cor=True, dop_cor=True)
+    >>> array_1p85_old = io.loaddb("path/to/necstdb", "board1", "OMU1p85m", "12CO(2-1)")
+    >>> array_v2 = io.loaddb("path/to/necstdb", "xffts_board01", "previous", "12CO(2-1)")
 
     """
 
