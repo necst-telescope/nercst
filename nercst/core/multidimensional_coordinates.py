@@ -5,11 +5,15 @@ import re
 from astropy.coordinates import EarthLocation, SkyCoord
 from astropy.time import Time
 import logging
+from typing import Union, Literal
+import os
 
 from neclib.coordinates import Observer, parse_frame, PointingError
 from neclib.core import RichParameters
 import necstdb
+from .analysis_params import rest_frequency
 
+PathLike = Union[str, os.PathLike]
 
 logger = logging.getLogger("necst")
 logger.setLevel(logging.DEBUG)
@@ -43,6 +47,7 @@ def convert_to_velocity(
         pre_hd_array = (obsfreq_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
     elif side_band == "lsb":
         pre_hd_array = (-obsfreq_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
+    logger.info(f"rest frequency: {observation_frequency}")
     freq_to_velocity_equiv = u.doppler_radio(observation_frequency)
     observed_v_array = pre_hd_array.to(
         u.km * u.s ** (-1), equivalencies=freq_to_velocity_equiv
@@ -52,14 +57,14 @@ def convert_to_velocity(
 
 
 def get_vlsr(
-    spec_array,
-    freq_resolution,
-    factor_1st_lo,
-    freq_1st_lo,
-    freq_2nd_lo,
-    side_bnad,
-    observation_frequency,
-    location,
+    spec_array: xr.DataArray,
+    freq_resolution: u.Quantity,
+    factor_1st_lo: int,
+    freq_1st_lo: u.Quantity,
+    freq_2nd_lo: u.Quantity,
+    side_band: Literal["usb", "lsb"],
+    observation_frequency: u.Quantity,
+    location: EarthLocation,
 ):
     channel_integer_numbers = spec_array.channel.data
     observed_v_array = convert_to_velocity(
@@ -68,7 +73,7 @@ def get_vlsr(
         factor_1st_lo,
         freq_1st_lo,
         freq_2nd_lo,
-        side_bnad,
+        side_band,
         observation_frequency,
     )
     v_obs_array = calc_vobs(
@@ -102,14 +107,20 @@ def get_lo(dbname, band_name, side_band):
     return freq_1st_lo, freq_2nd_lo
 
 
-def add_radial_velocity(spec_array, dbname, board, telescop):
+def add_radial_velocity(
+    spec_array: xr.DataArray,
+    dbname: PathLike,
+    board: str,
+    telescop: Literal["NANTEN2", "OMU1p85m", "previous"],
+    obs_line,
+):
     config_filepath = spec_array.attrs["config_filepath"]
     device_setting_filepath = spec_array.attrs["device_setting_path"]
     logger.info(f"read config file from {config_filepath}.")
     config = RichParameters.from_file(config_filepath)
+    config.attach_parsers(location=lambda x: EarthLocation(**x))
     logger.info(f"read device setting file from {device_setting_filepath}.")
     setting = RichParameters.from_file(device_setting_filepath)
-    config.attach_parsers(location=lambda x: EarthLocation(**x))
     board_split = board.split("-")
     board_id = re.sub(r"\D", "", board_split[-1])
     if len(board_split) == 1:
@@ -125,8 +136,14 @@ def add_radial_velocity(spec_array, dbname, board, telescop):
     band_name = if_name_split[0]
     side_band = if_name_split[1]
     freq_1st_lo, freq_2nd_lo = get_lo(dbname, band_name, side_band)
-    if telescop == "NANTEN2" & side_band == "lsb":
+    if (telescop == "NANTEN2") & (side_band == "lsb"):
         side_band = "usb"
+    observation_frequency = rest_frequency.get(obs_line, obs_line)
+    if not isinstance(observation_frequency, u.Quantity):
+        raise ValueError(
+            f"Invalid obs_line: {obs_line}. Expected one of {list(rest_frequency.keys())}. \n Enter the frequency (u.Quantity) directry."
+        )
+
     velocity_array = get_vlsr(
         spec_array,
         freq_resolution,
@@ -134,7 +151,7 @@ def add_radial_velocity(spec_array, dbname, board, telescop):
         freq_1st_lo,
         freq_2nd_lo,
         side_band,
-        setting.rest_frequency.freq[board_id],
+        observation_frequency,
         config.location,
     )
     ds = make_dataset(spec_array, velocity_array)
