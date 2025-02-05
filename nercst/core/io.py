@@ -79,6 +79,7 @@ def loaddb(
     dbname: PathLike,
     board: str,
     telescop: Literal["NANTEN2", "OMU1p85m", "previous"],
+    obs_line=None,
     pe_cor=True,
     dop_cor=False,
 ):
@@ -96,6 +97,8 @@ def loaddb(
     telescop : Literal["NANTEN2", "OMU1p85m", "previous"]
         Use parameter ``NANTEN2`` and ``OMU1p85m`` if you are using the
         NECST v4 system. ``previous`` is for the NECST v2 or v3.
+    obs_line : str or astropy.Quantity
+        Observed line name listed in analysis_params or frequency. For example, "12CO(1-0)" or 115.27120*u.GHz.
 
     Examples
     --------
@@ -188,6 +191,18 @@ def loaddb(
             if telescop in file_path.name:
                 loaded = loaded.assign_attrs(config_filepath=file_path)
 
+    device_setting_filepath_list = [
+        Path(file_path) for file_path in glob(str(dbname) + "/device_setting.toml")
+    ]
+    if len(device_setting_filepath_list) == 1:
+        loaded = loaded.assign_attrs(
+            device_setting_path=device_setting_filepath_list[0]
+        )
+    elif (len(device_setting_filepath_list) == 0) & dop_cor:
+        raise FileNotFoundError(f"device_setting.toml dose not exist in {dbname}.")
+    else:
+        pass
+
     try:
         obs_filepath = Path(glob(str(dbname) + "/*.obs")[0])
         loaded = loaded.assign_attrs(obs_filepath=obs_filepath)
@@ -209,10 +224,12 @@ def loaddb(
             )
             loaded = add_celestial_coords(loaded)
         if dop_cor:
-            device_setting_path = Path(str(dbname) + "/device_setting.toml")
-            loaded = loaded.assign_attrs(device_setting_path=device_setting_path)
             loaded = add_radial_velocity(
-                spec_array=loaded, dbname=dbname, board=board, telescop=telescop
+                spec_array=loaded,
+                dbname=dbname,
+                board=board,
+                telescop=telescop,
+                obs_line=obs_line,
             )
     else:
         if dop_cor:
