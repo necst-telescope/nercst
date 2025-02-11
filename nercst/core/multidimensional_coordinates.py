@@ -52,10 +52,14 @@ def convert_to_velocity(
 
     logger.info("Converting channel into velocity...")
     obsfreq_array = channel_integer_numbers * freq_resolution
+    logger.info(f"calc heterodyne ({side_band})")
+    logger.info(
+        f"1st LO: {freq_1st_lo}, 1st LO factor: {factor_1st_lo}, 2nd LO: {freq_2nd_lo}"
+    )
     if side_band == "usb":
         pre_hd_array = (obsfreq_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
     elif side_band == "lsb":
-        pre_hd_array = (-obsfreq_array + freq_2nd_lo) + factor_1st_lo * freq_1st_lo
+        pre_hd_array = (obsfreq_array - freq_2nd_lo) + factor_1st_lo * freq_1st_lo
     logger.info(f"rest frequency: {observation_frequency}")
     freq_to_velocity_equiv = u.doppler_radio(observation_frequency)
     observed_v_array = pre_hd_array.to(
