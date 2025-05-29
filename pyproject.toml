@@ -9,7 +9,7 @@ homepage = "https://github.com/necst-telescope/NERCST"
 repository = "https://github.com/necst-telescope/NERCST"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = ">=3.8,<3.12"
 neclib = ">=0.24.2"
 necstdb = ">=0.2.7"
 numpy = "^1.22"
