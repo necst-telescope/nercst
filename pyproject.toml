@@ -4,13 +4,16 @@ version = "0.1.6"
 description = "NEw reduction and calibration software for telescope "
 license = "MIT"
 readme = "README.md"
-authors = ["Rin Yamada <yamada@a.phys.nagoya-u.ac.jp>", "Demachi Fumika <f.demachi@a.phys.nagoya-u.ac.jp>"]
+authors = [
+    "Rin Yamada <yamada@a.phys.nagoya-u.ac.jp>",
+    "Demachi Fumika <f.demachi@a.phys.nagoya-u.ac.jp>",
+]
 homepage = "https://github.com/necst-telescope/NERCST"
 repository = "https://github.com/necst-telescope/NERCST"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
-neclib = ">=0.24.2"
+python = ">=3.10,<3.13"
+neclib = { git = "https://github.com/necst-telescope/neclib.git" }
 necstdb = ">=0.2.7"
 numpy = "^1.22"
 xarray = [
@@ -23,6 +26,9 @@ matplotlib = "^3.6.2"
 llvmlite = "^0.39"
 tqdm = "^4.64.1"
 scipy = "^1.10.1"
+spectral-cube = "^0.6.6"
+astroquery = "^0.4.10"
+reproject = "^0.14.1"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3"
@@ -38,4 +44,3 @@ sphinx = "^4.4"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
