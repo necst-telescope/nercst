@@ -145,7 +145,10 @@ def loaddb(
         encoder = db.open_table(f"necst-{telescop.upper()}-ctrl-antenna-encoder").read(
             astype="array"
         )
-        array_list.append(encoder)
+        altaz = db.open_table(f"necst-{telescop.upper()}-ctrl-antenna-altaz").read(
+            astype="array"
+        )
+        array_list.append(altaz[["dlon", "dlat"]])
         try:
             weather = db.open_table(f"necst-{telescop.upper()}-weather-ambient").read(
                 astype="array"
