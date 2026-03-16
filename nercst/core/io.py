@@ -145,6 +145,7 @@ def loaddb(
         encoder = db.open_table(f"necst-{telescop.upper()}-ctrl-antenna-encoder").read(
             astype="array"
         )
+        array_list.append(encoder)
         altaz = db.open_table(f"necst-{telescop.upper()}-ctrl-antenna-altaz").read(
             astype="array"
         )
