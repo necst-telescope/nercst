@@ -151,9 +151,9 @@ def loaddb(
         )
         array_list.append(altaz[["time", "dlon", "dlat"]])
         try:
-            weather = db.open_table(f"necst-{telescop.upper()}-weather-ambient").read(
-                astype="array"
-            )
+            weather = db.open_table(
+                f"necst-{telescop.upper()}-weather-ambient-out"
+            ).read(astype="array")
             array_list.append(weather)
         except Exception as e:
             logger.warning(e)
