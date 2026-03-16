@@ -179,6 +179,7 @@ def loaddb(
         loaded = nercst.core.struct.make_time_series_array(
             data[spec_label],
             time_coords=time_coords,
+            channel_coords=channel_coords,
         )
         loaded["t"] = data[data_tlabel]
 
