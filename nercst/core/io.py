@@ -165,7 +165,10 @@ def loaddb(
         df_reindex_list.append(_df)
 
     time_coords = pd.concat(df_reindex_list, axis=1).to_dict(orient="list")
-    channel_coords = {"channel": np.arange(len(data[spec_label][0]))}
+    if isinstance(data[spec_label][0], list):
+        channel_coords = {"channel": np.arange(len(data[spec_label][0]))}
+    else:
+        channel_coords = {"channel": np.array([0])}
     loaded = nercst.core.struct.make_time_series_array(
         data[spec_label],
         time_coords=time_coords,
