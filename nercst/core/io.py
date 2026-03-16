@@ -167,16 +167,20 @@ def loaddb(
     time_coords = pd.concat(df_reindex_list, axis=1).to_dict(orient="list")
     if isinstance(data[spec_label][0], list):
         channel_coords = {"channel": np.arange(len(data[spec_label][0]))}
+        loaded = nercst.core.struct.make_time_series_array(
+            data[spec_label],
+            time_coords=time_coords,
+            channel_coords=channel_coords,
+        )
+        loaded["t"] = data[data_tlabel]
+        loaded["ch"] = pd.Index(np.arange(data[spec_label].shape[1]))
     else:
         channel_coords = {"channel": np.array([0])}
-    loaded = nercst.core.struct.make_time_series_array(
-        data[spec_label],
-        time_coords=time_coords,
-        channel_coords=channel_coords,
-    )
-
-    loaded["t"] = data[data_tlabel]
-    loaded["ch"] = pd.Index(np.arange(data[spec_label].shape[1]))
+        loaded = nercst.core.struct.make_time_series_array(
+            data[spec_label],
+            time_coords=time_coords,
+        )
+        loaded["t"] = data[data_tlabel]
 
     config_filepath_list = [
         Path(file_path) for file_path in glob(str(dbname) + "/*config.toml")
