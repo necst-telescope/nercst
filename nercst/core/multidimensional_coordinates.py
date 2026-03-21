@@ -139,26 +139,19 @@ def read_location(array: xr.DataArray):
 
 
 def add_celestial_coords(array: xr.DataArray) -> xr.DataArray:
-    pepath = array.attrs["pointing_params_path"]
-    pe = PointingError.from_file(pepath)
-    lon_list = []
-    lat_list = []
-    for _lon, _lat in zip(array["lon"].values, array["lat"].values):
-        lon, lat = pe.apparent_to_refracted(
-            _lon * u.deg,
-            _lat * u.deg,
-        )
-        lon_list.append(lon)
-        lat_list.append(lat)
+    lon_list = array["lon"].values - array["dlon"].values
+    lat_list = array["lat"].values - array["dlat"].values
+
+    array = array.assign_coords({"lon_cor": ("t", lon_list)})
+    array = array.assign_coords({"lat_cor": ("t", lat_list)})
     obstime = Time(array.t, format="unix")
     location = read_location(array)
-    lon_lat = SkyCoord(
-        lon_list, lat_list, frame="altaz", obstime=obstime, location=location
-    )
-    array = array.assign_coords({"lon_cor": ("t", lon_lat.az.value)})
-    array = array.assign_coords({"lat_cor": ("t", lon_lat.alt.value)})
     radec_lat = SkyCoord(
-        lon_list, lat_list, frame="altaz", obstime=obstime, location=location
+        lon_list * u.deg,
+        lat_list * u.deg,
+        frame="altaz",
+        obstime=obstime,
+        location=location,
     ).transform_to("icrs")
     array = array.assign_coords({"ra_cor": ("t", radec_lat.ra.value)})
     array = array.assign_coords({"dec_cor": ("t", radec_lat.dec.value)})

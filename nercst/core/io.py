@@ -146,10 +146,14 @@ def loaddb(
             astype="array"
         )
         array_list.append(encoder)
+        altaz = db.open_table(f"necst-{telescop.upper()}-ctrl-antenna-altaz").read(
+            astype="array"
+        )
+        array_list.append(altaz[["time", "dlon", "dlat"]])
         try:
-            weather = db.open_table(f"necst-{telescop.upper()}-weather-ambient").read(
-                astype="array"
-            )
+            weather = db.open_table(
+                f"necst-{telescop.upper()}-weather-ambient-out"
+            ).read(astype="array")
             array_list.append(weather)
         except Exception as e:
             logger.warning(e)
@@ -165,15 +169,32 @@ def loaddb(
         df_reindex_list.append(_df)
 
     time_coords = pd.concat(df_reindex_list, axis=1).to_dict(orient="list")
-    channel_coords = {"channel": np.arange(len(data[spec_label][0]))}
-    loaded = nercst.core.struct.make_time_series_array(
-        data[spec_label],
-        time_coords=time_coords,
-        channel_coords=channel_coords,
-    )
+    spec_data = np.asarray(data[spec_label])
 
-    loaded["t"] = data[data_tlabel]
-    loaded["ch"] = pd.Index(np.arange(data[spec_label].shape[1]))
+    if spec_data.ndim == 2:
+        channel_coords = {"channel": np.arange(spec_data.shape[1])}
+        loaded = nercst.core.struct.make_time_series_array(
+            spec_data,
+            time_coords=time_coords,
+            channel_coords=channel_coords,
+        )
+        loaded["t"] = data[data_tlabel]
+        loaded["ch"] = pd.Index(np.arange(spec_data.shape[1]))
+
+    elif spec_data.ndim == 1:
+        # TP mode: 1次元 -> (t, ch=1) に変換
+        spec_data = spec_data[:, np.newaxis]
+        channel_coords = {"channel": np.array([0])}
+        loaded = nercst.core.struct.make_time_series_array(
+            spec_data,
+            time_coords=time_coords,
+            channel_coords=channel_coords,
+        )
+        loaded["t"] = data[data_tlabel]
+        loaded["ch"] = pd.Index([0])
+
+    else:
+        raise ValueError(f"Unsupported spectral data shape: {spec_data.shape}")
 
     config_filepath_list = [
         Path(file_path) for file_path in glob(str(dbname) + "/*config.toml")
