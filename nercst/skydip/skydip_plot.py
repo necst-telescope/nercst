@@ -41,7 +41,9 @@ def plot_all(
     """
     if type(dbname) == str:
         dbname = Path(dbname)
-    board_list = sorted(io.board_name_getter(dbname))
+    board_list = sorted(
+        io.board_name_getter(dbname), key=lambda x: int(x.split("board")[-1])
+    )
     figsize_x, figsize_y, board_list = calc_figsize(board_list)
     fig, ax = plt.subplots(
         figsize_x, figsize_y, figsize=(5 * figsize_x + 3, 5 * figsize_y)
